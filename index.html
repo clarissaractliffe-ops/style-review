@@ -171,7 +171,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .icon-btn.arm { color: var(--surface); background: var(--st-reproto); border-color: var(--st-reproto); width: auto; padding: 0 10px; font-size: 13px; font-weight: 600; }
 @container (max-width: 560px) { .slide-head { grid-template-columns: auto minmax(0,1fr); } .head-tools { grid-column: 1 / -1; justify-content: flex-end; order: -1; } .look-num { font-size: 40px; } }
 
-.status-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 4px; }
+.status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 14px 0 4px; }
+.status-lbl { margin-right: 6px; flex-basis: 100%; }
 .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; }
 .chip .dot { background: var(--st); }
 .chip[aria-checked="true"] { background: var(--st); border-color: var(--st); color: var(--surface); }
@@ -874,7 +875,8 @@ function renderEditor() {
         <button class="icon-btn" id="del" aria-label="Delete look" title="Delete look">${ICON.del}</button>
       </div>
     </div>
-    <div class="status-row" role="radiogroup" aria-label="Status">
+    <div class="status-row" role="radiogroup" aria-labelledby="status-lbl">
+      <span class="lbl status-lbl" id="status-lbl">Fitting outcome</span>
       ${STATUSES.map((x) => `<button class="chip st-${x.id}" role="radio" data-status="${x.id}" aria-checked="${x.id === s.status}"><span class="dot"></span>${x.label}</button>`).join("")}
     </div>
     <div class="slots n${t.slots.length}">
@@ -1238,7 +1240,7 @@ async function boot() {
   renderTemplates();
   if (inPreview) $("#preview-note").hidden = false;
   const saved = await store.get("session");
-  const stale = saved && saved.example && saved.exVer !== EX_VER;
+  const stale = saved && saved.exVer !== EX_VER && (saved.example || (saved.slides || []).some((x) => x.code === "W27-CT-0412"));
   S = saved && saved.slides && saved.slides.length && !stale ? saved : await exampleSession();
   if (!S.current) S.current = S.slides[0].id;
   renderAll();

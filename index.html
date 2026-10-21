@@ -1236,7 +1236,8 @@ async function boot() {
   if (inPreview) $("#preview-note").hidden = false;
   const saved = await store.get("session");
   const stale = saved && saved.exVer !== EX_VER && (saved.example || (saved.slides || []).some((x) => x.code === "W27-CT-0412"));
-  S = saved && saved.slides && saved.slides.length && !stale ? saved : await exampleSession();
+  const untouched = saved && !saved.season && (saved.slides || []).every((x) => !x.name && !x.code && !Object.keys(x.photos || {}).length && !Object.values(x.notes || {}).some(Boolean));
+  S = saved && saved.slides && saved.slides.length && !stale && !untouched ? saved : await exampleSession();
   if (!S.current) S.current = S.slides[0].id;
   renderAll();
   sampleP.then((fn) => { if (fn) { sampleFn = fn; if (mode === "capture") { const box = $('.note[data-note="actions"] .note-tools'); if (box && !$("#ai-actions")) box.insertAdjacentHTML("afterbegin", `<button class="ai-btn" id="ai-actions" title="Draft actions from this look's notes">${ICON.spark}Draft from notes</button>`); } } });

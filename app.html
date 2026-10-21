@@ -1,0 +1,1240 @@
+<title>Style Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a fitting-room tool. Capture = rail of looks + photo/voice pairs; Review = the deck itself, white slides on a putty ground. */
+:root {
+  --paper: #EFEFEB;
+  --surface: #FFFFFF;
+  --ink: #1A1A18;
+  --muted: #676A62;
+  --line: #D7D8D0;
+  --accent: #2E4A3A;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #DCE5DE;
+  --rec: #C0352A;
+  --rec-soft: #F6DEDB;
+  --st-review: #44518F;
+  --st-approved: #2F7A4B;
+  --st-comments: #A86F0B;
+  --st-reproto: #B8382D;
+  --st-dropped: #6B6E66;
+  --slide-bg: #FFFFFF;
+  --slide-ink: #1A1A18;
+  --slide-muted: #6B6E66;
+  --slide-paper: #F2F2EF;
+  --slide-line: #D9DAD3;
+  --shadow: 0 1px 2px rgba(26,26,24,.06), 0 8px 24px rgba(26,26,24,.06);
+  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --f-slide-display: Georgia, "Times New Roman", serif;
+  --f-slide-body: Arial, Helvetica, sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121412; --surface: #1B1E1B; --ink: #ECEDE8; --muted: #9DA197; --line: #30342F;
+    --accent: #93BBA0; --accent-ink: #0F1A13; --accent-soft: #24332A;
+    --rec: #F07468; --rec-soft: #3A1F1C;
+    --st-review: #8F9BDB; --st-approved: #6FC08D; --st-comments: #E0AE4E; --st-reproto: #F07468; --st-dropped: #9DA197;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121412; --surface: #1B1E1B; --ink: #ECEDE8; --muted: #9DA197; --line: #30342F;
+  --accent: #93BBA0; --accent-ink: #0F1A13; --accent-soft: #24332A;
+  --rec: #F07468; --rec-soft: #3A1F1C;
+  --st-review: #8F9BDB; --st-approved: #6FC08D; --st-comments: #E0AE4E; --st-reproto: #F07468; --st-dropped: #9DA197;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.45 var(--f-body); -webkit-text-size-adjust: 100%; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+
+/* ---------- top bar ---------- */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-in { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mark { font-family: var(--f-display); font-weight: 500; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; line-height: 1; white-space: nowrap; }
+.mark em { font-style: italic; letter-spacing: .02em; text-transform: none; font-weight: 400; }
+.tabs { display: inline-flex; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.tabs button { border: 0; background: transparent; padding: 7px 16px; border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--muted); min-height: 36px; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--surface); }
+.spacer { flex: 1; }
+.exports { display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--surface); padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 14px; min-height: 40px; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn svg { width: 16px; height: 16px; flex: none; }
+.btn[disabled] { opacity: .55; cursor: progress; }
+.btn.ghost { background: transparent; }
+.btn .short { display: none; }
+.btn.danger { color: var(--st-reproto); }
+@media (max-width: 640px) {
+  .tabs { order: 3; width: 100%; }
+  .tabs button { flex: 1; }
+  .btn .long { display: none; }
+  .btn .short { display: inline; }
+}
+
+/* ---------- banners ---------- */
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.banner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; padding: 10px 14px; border-radius: var(--r); background: var(--accent-soft); font-size: 14px; }
+.banner p { margin: 0; flex: 1 1 260px; }
+.banner.warn { background: var(--rec-soft); }
+
+/* ---------- fitting details ---------- */
+.fitting { margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.fitting summary { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; padding: 12px 14px; cursor: pointer; }
+.fitting summary::-webkit-details-marker { display: none; }
+.fit-title { font-weight: 700; }
+.fit-sub { color: var(--muted); font-size: 14px; }
+.due { margin-left: auto; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.due.late { background: var(--rec-soft); color: var(--rec); }
+.fit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; padding: 0 14px 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field label, .lbl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 10px; min-height: 42px; }
+.field.wide { grid-column: 1 / -1; }
+.fit-foot { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 14px 14px; align-items: center; }
+.fit-foot .hint { color: var(--muted); font-size: 13px; }
+
+/* ---------- capture layout ---------- */
+.capture { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 14px 120px; }
+@media (min-width: 960px) { .capture { grid-template-columns: 250px minmax(0, 1fr); align-items: start; } }
+.rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+@media (min-width: 960px) { .rail { flex-direction: column; overflow: visible; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); } }
+.rail-item { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 4px 10px; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: var(--r); padding: 8px 12px; min-width: 200px; }
+@media (min-width: 960px) { .rail-item { min-width: 0; } }
+.rail-item[aria-current="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.r-num { font-family: var(--f-display); font-size: 28px; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.r-text { min-width: 0; display: flex; flex-direction: column; }
+.r-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.r-code { font: 12px var(--f-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.r-side { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--st-review); }
+.r-count { font: 11px var(--f-mono); color: var(--muted); }
+.add-look { border: 1px dashed var(--muted); background: transparent; border-radius: var(--r); padding: 10px 14px; font-weight: 600; color: var(--ink); min-width: 140px; min-height: 52px; }
+.st-review { --st: var(--st-review); } .st-approved { --st: var(--st-approved); } .st-comments { --st: var(--st-comments); } .st-reproto { --st: var(--st-reproto); } .st-dropped { --st: var(--st-dropped); }
+.dot[class*="st-"] { background: var(--st); }
+
+/* template picker */
+.picker { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; margin-bottom: 14px; }
+.picker-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.picker h2 { margin: 0; font-size: 16px; }
+.tpl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.tpl { border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 10px; text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.tpl:hover { border-color: var(--ink); }
+.tpl svg { width: 100%; height: auto; display: block; background: var(--surface); border-radius: 4px; }
+.tpl b { font-size: 14px; }
+.tpl span { font-size: 13px; color: var(--muted); }
+
+/* editor */
+.editor { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; container-type: inline-size; min-width: 0; }
+.slide-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px 14px; align-items: start; }
+.look-box { display: flex; flex-direction: column; }
+.look-num { font-family: var(--f-display); font-size: 48px; line-height: 1; width: 2.6ch; border: 0; border-bottom: 1px solid transparent; background: transparent; padding: 0; font-variant-numeric: lining-nums; }
+.look-num:hover, .look-num:focus { border-bottom-color: var(--line); outline: none; }
+.meta { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.f-name { font-size: 22px; font-weight: 700; border: 0; border-bottom: 1px solid var(--line); background: transparent; padding: 2px 0 4px; width: 100%; }
+.f-name:focus { outline: none; border-bottom-color: var(--ink); }
+.meta-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.meta-row input, .meta-row select { width: 100%; border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 8px 10px; min-height: 40px; font-size: 14px; }
+.meta-row .mono { font-family: var(--f-mono); font-size: 13px; }
+.head-tools { display: flex; gap: 6px; }
+.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; color: var(--muted); }
+.icon-btn:hover { color: var(--ink); border-color: var(--muted); }
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn.arm { color: var(--surface); background: var(--st-reproto); border-color: var(--st-reproto); width: auto; padding: 0 10px; font-size: 13px; font-weight: 600; }
+@container (max-width: 560px) { .slide-head { grid-template-columns: auto minmax(0,1fr); } .head-tools { grid-column: 1 / -1; justify-content: flex-end; order: -1; } .look-num { font-size: 40px; } }
+
+.status-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 4px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; }
+.chip .dot { background: var(--st); }
+.chip[aria-checked="true"] { background: var(--st); border-color: var(--st); color: var(--surface); }
+.chip[aria-checked="true"] .dot { background: var(--surface); }
+
+.slots { display: grid; gap: 16px; margin-top: 16px; }
+.slots.n3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.slots.n2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.slots.n1 { grid-template-columns: minmax(0,1fr); }
+.pair { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.slots.n1 .pair { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+@container (max-width: 760px) {
+  .slots.n3, .slots.n2 { grid-template-columns: minmax(0,1fr); }
+  .slots .pair { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+}
+
+.photo { container-type: inline-size; position: relative; aspect-ratio: 3 / 4; max-width: 100%; background: var(--paper); border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+.photo.drag { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo .empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 10px; text-align: center; }
+.slot-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.photo-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.photo-btns button, .photo-tools button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 12px; font-size: 13px; font-weight: 600; min-height: 38px; }
+.photo-btns button svg, .photo-tools button svg { width: 15px; height: 15px; }
+.drop-hint { font-size: 12px; color: var(--muted); }
+@media (pointer: coarse) { .drop-hint { display: none; } }
+.corner { position: absolute; width: 14px; height: 14px; border-color: var(--muted); border-style: solid; opacity: .5; pointer-events: none; }
+.corner.tl { top: 8px; left: 8px; border-width: 1px 0 0 1px; } .corner.tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+.corner.bl { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; } .corner.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+.photo.has .corner { display: none; }
+.photo-tag { position: absolute; top: 8px; left: 8px; background: color-mix(in srgb, var(--surface) 88%, transparent); border-radius: 6px; padding: 3px 7px; }
+.photo-tools { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+.photo-tools button { background: color-mix(in srgb, var(--surface) 92%, transparent); }
+@container (max-width: 240px) { .photo-tools { left: auto; flex-direction: column; } .photo-tools button { width: 38px; padding: 0; justify-content: center; font-size: 0; gap: 0; } .photo-tools button svg { width: 16px; height: 16px; } }
+
+.note { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.note-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.note-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.note textarea { width: 100%; min-height: 96px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 10px 12px; line-height: 1.45; font-size: 15px; }
+.note.live textarea { border-color: var(--rec); box-shadow: 0 0 0 3px var(--rec-soft); background: var(--surface); }
+.interim { margin: 0; min-height: 1.2em; font-size: 13px; color: var(--muted); font-style: italic; }
+.mic { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px 6px 10px; font-size: 13px; font-weight: 600; min-height: 38px; }
+.mic svg { width: 16px; height: 16px; }
+.mic[aria-pressed="true"] { background: var(--rec); border-color: var(--rec); color: #fff; }
+.mic .pulse { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: none; }
+.mic[aria-pressed="true"] .pulse { display: block; animation: pulse 1.1s ease-in-out infinite; }
+.mic[aria-pressed="true"] svg { display: none; }
+@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+
+.wrapup { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+@container (max-width: 640px) { .wrapup { grid-template-columns: minmax(0,1fr); } }
+.ai-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--accent); color: var(--accent); background: transparent; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; min-height: 38px; }
+.ai-btn svg { width: 15px; height: 15px; }
+.note-tools { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* ---------- review ---------- */
+.review { padding-block: 14px 140px; display: grid; gap: 22px; }
+.ready { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+.ready h2 { margin: 0 0 4px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.ready p { margin: 0; color: var(--muted); font-size: 14px; }
+.ready ul { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.ready li button { border: 0; background: none; padding: 0; text-align: left; color: var(--ink); font-size: 14px; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+.ready .ok { color: var(--st-approved); }
+.ready .todo { color: var(--st-comments); }
+.deck { display: grid; gap: 22px; max-width: 1180px; width: 100%; margin: 0 auto; }
+.rs-wrap { display: flex; flex-direction: column; gap: 8px; scroll-margin-top: 90px; }
+.rs-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.rs-bar b { color: var(--ink); font-weight: 600; }
+.rs-bar .spacer { flex: 1; }
+.rs-bar .icon-btn { width: 36px; height: 36px; }
+.rs { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--slide-bg); color: var(--slide-ink); border-radius: 4px; box-shadow: var(--shadow); container-type: inline-size; overflow: hidden; }
+.el { position: absolute; overflow: hidden; }
+.el.t { padding: .6cqw; line-height: 1.25; white-space: pre; font-family: var(--f-slide-body); }
+.el.t.display { font-family: var(--f-slide-display); }
+.el.t.bold { font-weight: 700; }
+.el.t.center { text-align: center; } .el.t.right { text-align: right; }
+.el.rect { background: var(--slide-paper); }
+.el.pill { border-radius: 999px; }
+.el.hr { border-top: 1px solid var(--slide-line); height: 0 !important; }
+.el.img img { width: 100%; height: 100%; object-fit: fill; display: block; }
+.el[data-edit], .el[data-photo] { cursor: pointer; }
+.el[data-edit]:hover { box-shadow: 0 0 0 1px var(--accent); }
+.el.editing { box-shadow: 0 0 0 2px var(--accent) !important; }
+.el.over { box-shadow: 0 0 0 2px var(--rec); }
+.el.ph { color: #9A9C95 !important; font-style: italic; }
+.el.vmid { display: flex; align-items: center; justify-content: center; }
+
+/* edit sheet */
+.sheet { position: fixed; z-index: 40; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 -8px 30px rgba(0,0,0,.18); display: flex; flex-direction: column; left: 0; right: 0; bottom: 0; max-height: 62vh; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); }
+@media (min-width: 1100px) { .review.sheet-open .deck { width: auto; margin-left: 0; } .sheet { left: auto; top: calc(env(safe-area-inset-top, 0px) + 76px); right: max(16px, env(safe-area-inset-right, 0px)); bottom: 16px; width: 380px; max-height: none; border-radius: 14px; padding: 0; } .review.sheet-open .deck { margin-right: 400px; } }
+.sheet header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.sheet h2 { margin: 0; font-size: 16px; flex: 1; min-width: 0; }
+.sheet-body { padding: 14px 16px 18px; overflow: auto; display: grid; gap: 12px; align-content: start; }
+.sheet textarea { min-height: 150px; resize: vertical; line-height: 1.45; }
+.sheet .fit-msg { font-size: 13px; color: var(--muted); margin: 0; }
+.sheet .fit-msg.over { color: var(--rec); font-weight: 600; }
+
+/* toast */
+.toast { position: fixed; z-index: 50; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--surface); padding: 11px 16px; border-radius: 10px; font-size: 14px; max-width: min(520px, calc(100vw - 32px)); box-shadow: var(--shadow); }
+@media (prefers-reduced-motion: reduce) { .mic[aria-pressed="true"] .pulse { animation: none; } }
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="mark">Style <em>Review</em></div>
+    <div class="tabs" role="tablist" aria-label="Mode">
+      <button id="tab-capture" role="tab" aria-selected="true">Capture</button>
+      <button id="tab-review" role="tab" aria-selected="false">Review &amp; edit</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="exports">
+      <button class="btn" id="exp-pdf" title="Export PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/><path d="M9 14h6M9 17h4"/></svg>
+        <span>PDF</span></button>
+      <button class="btn primary" id="exp-pptx" title="Export PowerPoint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg>
+        <span><span class="long">PowerPoint</span><span class="short">PPT</span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="banner" id="preview-note" hidden>
+    <p><b>Preview here.</b> Photos, typing, editing and exports work in this preview. Voice dictation needs the microphone, which this preview can't use: it works once the app is hosted (GitHub Pages now, LVMH hosting later).</p>
+  </div>
+  <div class="banner" id="example-note" hidden>
+    <p>This is an example fitting so you can see how it works. Everything you change is saved on this device.</p>
+    <button class="btn" id="example-clear">Start a new fitting</button>
+  </div>
+
+  <details class="fitting" id="fitting">
+    <summary>
+      <span class="fit-title" id="fit-title"></span>
+      <span class="fit-sub" id="fit-sub"></span>
+      <span class="due" id="due"></span>
+    </summary>
+    <div class="fit-grid">
+      <div class="field"><label for="s-season">Season / collection</label><input id="s-season" data-s="season"></div>
+      <div class="field"><label for="s-fitting">Fitting</label><input id="s-fitting" data-s="fitting"></div>
+      <div class="field"><label for="s-date">Date</label><input id="s-date" type="date" data-s="date"></div>
+      <div class="field"><label for="s-time">Start time</label><input id="s-time" type="time" data-s="time"></div>
+      <div class="field wide"><label for="s-att">Attendees</label><input id="s-att" data-s="attendees"></div>
+      <div class="field"><label for="s-lang">Dictation language</label>
+        <select id="s-lang" data-s="lang">
+          <option value="en-GB">English</option><option value="es-ES">Español</option><option value="fr-FR">Français</option><option value="it-IT">Italiano</option>
+        </select></div>
+    </div>
+    <div class="fit-foot">
+      <button class="btn danger" id="new-fitting">Start a new fitting</button>
+      <span class="hint" id="save-state">Saved on this device</span>
+    </div>
+  </details>
+</div>
+
+<main>
+  <section class="capture wrap" id="view-capture">
+    <nav class="rail" id="rail" aria-label="Looks"></nav>
+    <div class="cap-main" style="min-width:0">
+      <div class="picker" id="picker" hidden>
+        <div class="picker-head"><h2>Choose a slide template</h2><button class="btn ghost" id="picker-close">Cancel</button></div>
+        <div class="tpl-grid" id="tpl-grid"></div>
+      </div>
+      <div class="editor" id="editor"></div>
+    </div>
+  </section>
+
+  <section class="review wrap" id="view-review" hidden>
+    <div class="ready" id="ready"></div>
+    <div class="deck" id="deck"></div>
+  </section>
+</main>
+
+<aside class="sheet" id="sheet" hidden aria-label="Edit">
+  <header><h2 id="sheet-title">Edit</h2><button class="btn primary" id="sheet-done">Done</button></header>
+  <div class="sheet-body" id="sheet-body"></div>
+</aside>
+
+<input type="file" id="in-camera" accept="image/*" capture="environment" hidden>
+<input type="file" id="in-upload" accept="image/*" hidden>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ================= constants ================= */
+const LIBS = {
+  pptx: "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",
+  pdf: "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+};
+const STATUSES = [
+  { id: "review", label: "To review", hex: "44518F" },
+  { id: "approved", label: "Approved", hex: "2F7A4B" },
+  { id: "comments", label: "Approved with comments", hex: "A86F0B" },
+  { id: "reproto", label: "Re-proto", hex: "B8382D" },
+  { id: "dropped", label: "Dropped", hex: "6B6E66" }
+];
+const PROTOS = ["Proto 1", "Proto 2", "Proto 3", "SMS", "PP sample", "Production"];
+const TEMPLATES = {
+  look3: { name: "Full look", hint: "Front, side and back views", slots: [["front", "Front"], ["side", "Side"], ["back", "Back"]] },
+  detail: { name: "Detail focus", hint: "Full look plus two close-ups", slots: [["look", "Full look"], ["d1", "Detail 1"], ["d2", "Detail 2"]] },
+  compare: { name: "Proto vs proto", hint: "Last proto next to this one", slots: [["prev", "Previous proto"], ["curr", "This proto"]] },
+  single: { name: "Single garment", hint: "One photo, room for long notes", slots: [["main", "Garment"]] }
+};
+const WRAP_NOTES = [["overall", "Overall comments"], ["actions", "Actions"]];
+// slide geometry, inches (16:9 widescreen)
+const W = 13.333, H = 7.5, M = 0.45, PAD = 0.08, LH = 1.25;
+const C = { ink: "1A1A18", muted: "6B6E66", paper: "F2F2EF", line: "D9DAD3", ph: "9A9C95" };
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const inPreview = typeof window.claude === "object" && !!window.claude;
+const capP = (name) => (inPreview && window.claude.use ? window.claude.use(name).catch(() => null) : Promise.resolve(null));
+const downloadsP = capP("downloads");
+const sampleP = capP("sample");
+
+const ICON = {
+  mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>',
+  cam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
+  up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>',
+  del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  upArrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+  downArrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>',
+  spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>'
+};
+
+/* ================= state ================= */
+let S = null;          // session
+let mode = "capture";
+let pendingPhoto = null; // {slideId, key}
+
+const blankSlide = (tpl = "look3", look = "01") => ({
+  id: uid(), template: tpl, look, code: "", name: "", proto: "Proto 1", model: "", status: "review", photos: {}, notes: {}
+});
+const blankSession = () => {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return {
+    v: 1, example: false, season: "", fitting: "Fitting", attendees: "",
+    date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:00`,
+    lang: guessLang(), slides: [blankSlide()], current: null
+  };
+};
+function guessLang() {
+  const l = (navigator.language || "en").slice(0, 2);
+  return { es: "es-ES", fr: "fr-FR", it: "it-IT" }[l] || "en-GB";
+}
+const cur = () => S.slides.find((s) => s.id === S.current) || S.slides[0];
+const byId = (id) => S.slides.find((s) => s.id === id);
+
+/* ================= storage (IndexedDB) ================= */
+const store = {
+  db: null,
+  open() {
+    return new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open("style-review", 1);
+        r.onupgradeneeded = () => r.result.createObjectStore("kv");
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+      } catch (e) { rej(e); }
+    });
+  },
+  async get(k) {
+    try {
+      this.db = this.db || (await this.open());
+      return await new Promise((res, rej) => { const q = this.db.transaction("kv").objectStore("kv").get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+    } catch (e) { return null; }
+  },
+  async set(k, v) {
+    this.db = this.db || (await this.open());
+    return new Promise((res, rej) => { const t = this.db.transaction("kv", "readwrite"); t.objectStore("kv").put(v, k); t.oncomplete = res; t.onerror = () => rej(t.error); });
+  }
+};
+let saveTimer = null;
+function save() {
+  clearTimeout(saveTimer);
+  $("#save-state").textContent = "Saving…";
+  saveTimer = setTimeout(async () => {
+    try { await store.set("session", S); $("#save-state").textContent = "Saved on this device"; }
+    catch (e) { $("#save-state").textContent = "Not saved: this browser is blocking storage. Export before closing."; }
+  }, 400);
+}
+
+/* ================= helpers ================= */
+const toastEl = $("#toast");
+let toastT = null;
+function toast(msg, ms = 4200) {
+  toastEl.textContent = msg; toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => (toastEl.hidden = true), ms);
+}
+function fmtDate(iso, opts = { weekday: "short", day: "numeric", month: "short", year: "numeric" }) {
+  if (!iso) return "";
+  const d = new Date(iso + "T12:00");
+  return isNaN(d) ? iso : d.toLocaleDateString("en-GB", opts);
+}
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = res; s.onerror = () => rej(new Error("load"));
+    document.head.appendChild(s);
+  });
+}
+const libP = {};
+function lib(name) {
+  if (!libP[name]) libP[name] = loadScript(LIBS[name]).catch((e) => { delete libP[name]; throw e; });
+  return libP[name];
+}
+function autogrow(ta) { ta.style.height = "auto"; ta.style.height = Math.max(96, ta.scrollHeight + 2) + "px"; }
+function nextLook() {
+  const nums = S.slides.map((s) => parseInt(s.look, 10)).filter((n) => !isNaN(n));
+  return String((nums.length ? Math.max(...nums) : 0) + 1).padStart(2, "0");
+}
+function setPath(slide, path, val) {
+  const [a, b] = path.split(".");
+  if (b) { slide[a] = slide[a] || {}; slide[a][b] = val; } else slide[a] = val;
+}
+function getPath(slide, path) {
+  const [a, b] = path.split(".");
+  return b ? (slide[a] || {})[b] || "" : slide[a] || "";
+}
+
+/* ================= image handling ================= */
+async function fileToPhoto(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const max = 1600, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.round(img.naturalWidth * sc), h = Math.round(img.naturalHeight * sc);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img, 0, 0, w, h);
+    return { src: c.toDataURL("image/jpeg", 0.84), w, h };
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/* ================= dictation ================= */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let dict = null; // {id, ta, btn, interim, onText, rec, base, committed, stopping, lock}
+function sentence(t) {
+  t = t.trim(); if (!t) return "";
+  t = t[0].toUpperCase() + t.slice(1);
+  return /[.!?…]$/.test(t) ? t : t + ".";
+}
+function setMicUI(btn, on) {
+  if (!btn) return;
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  const lab = btn.querySelector(".mic-l"); if (lab) lab.textContent = on ? "Stop" : "Dictate";
+  btn.closest(".note")?.classList.toggle("live", on);
+}
+function stopDictation() {
+  if (!dict) return;
+  const d = dict; dict = null; d.stopping = true;
+  try { d.rec && d.rec.stop(); } catch (e) {}
+  setMicUI(d.btn, false);
+  if (d.interim) d.interim.textContent = "";
+  if (d.lock) { d.lock.release().catch(() => {}); }
+}
+function startRec() {
+  const d = dict; if (!d) return;
+  const rec = new SR();
+  rec.lang = S.lang || "en-GB"; rec.continuous = true; rec.interimResults = true;
+  d.rec = rec; d.base = d.ta.value.trimEnd(); d.committed = "";
+  rec.onresult = (e) => {
+    if (dict !== d) return;
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const r = e.results[i];
+      if (r.isFinal) d.committed += (d.committed ? " " : "") + sentence(r[0].transcript);
+      else interim += r[0].transcript;
+    }
+    const joined = [d.base, d.committed].filter(Boolean).join(d.base && !/\n$/.test(d.base) ? " " : "");
+    d.ta.value = joined;
+    if (d.interim) d.interim.textContent = interim ? interim + "…" : "";
+    d.onText(joined);
+    if (d.ta.tagName === "TEXTAREA" && d.grow) autogrow(d.ta);
+  };
+  rec.onerror = (e) => {
+    if (dict !== d) return;
+    if (e.error === "no-speech" || e.error === "aborted") return;
+    const msg = {
+      "not-allowed": inPreview ? "This preview can't use the microphone. Dictation works on the hosted app; type here for now." : "Microphone access is blocked. Allow it in the browser settings for this site, then tap Dictate again.",
+      "service-not-allowed": "This browser doesn't allow dictation here. Try Safari on iPad/iPhone, or Chrome or Edge on a laptop.",
+      "network": "The speech service can't be reached. Check the Wi-Fi and tap Dictate again.",
+      "audio-capture": "No microphone found. Check that one is connected."
+    }[e.error] || "Dictation stopped (" + e.error + "). Tap Dictate to carry on.";
+    toast(msg, 6000);
+    stopDictation();
+  };
+  rec.onend = () => { if (dict === d && !d.stopping) { try { startRec(); } catch (e) { stopDictation(); } } };
+  try { rec.start(); } catch (e) { stopDictation(); toast("Dictation couldn't start. Tap Dictate again."); }
+}
+async function toggleDictation(id, ta, btn, interim, onText, grow = true) {
+  if (dict && dict.id === id) { stopDictation(); return; }
+  stopDictation();
+  if (!SR) {
+    toast(inPreview ? "Dictation works on the hosted app. Type here for now." : "This browser has no built-in dictation. Use Safari on iPad/iPhone, or Chrome or Edge on a laptop.", 6000);
+    ta.focus(); return;
+  }
+  dict = { id, ta, btn, interim, onText, grow, stopping: false };
+  setMicUI(btn, true);
+  try { if (navigator.wakeLock) dict.lock = await navigator.wakeLock.request("screen"); } catch (e) {}
+  startRec();
+}
+// keep typed edits while dictating
+document.addEventListener("input", (e) => { if (dict && e.target === dict.ta && e.isTrusted) { dict.base = dict.ta.value.trimEnd(); dict.committed = ""; } }, true);
+
+/* ================= slide layout (shared by review, PPTX, PDF) ================= */
+const mctx = document.createElement("canvas").getContext("2d");
+function wrapLines(text, pt, wIn, bold) {
+  mctx.font = `${bold ? "bold " : ""}${pt}px Arial, Helvetica, sans-serif`;
+  const maxW = wIn * 72, out = [];
+  for (const para of String(text).split("\n")) {
+    const words = para.split(/\s+/).filter(Boolean);
+    if (!words.length) { out.push(""); continue; }
+    let line = "";
+    for (const w of words) {
+      const t = line ? line + " " + w : w;
+      if (!line || mctx.measureText(t).width <= maxW) line = t;
+      else { out.push(line); line = w; }
+    }
+    out.push(line);
+  }
+  return out;
+}
+function resolveText(e) {
+  const iw = e.w - 2 * PAD, ih = e.h - 2 * PAD;
+  if (e.fit) {
+    for (let s = e.size; s >= e.min; s -= 0.5) {
+      const lines = wrapLines(e.text, s, iw, e.bold);
+      if (lines.length * s * LH <= ih * 72 + 0.5) return { size: s, lines, over: false };
+    }
+    const lines = wrapLines(e.text, e.min, iw, e.bold);
+    return { size: e.min, lines, over: true };
+  }
+  return { size: e.size, lines: wrapLines(e.text, e.size, iw, e.bold), over: false };
+}
+function photoEls(els, s, key, label, x, y, w, h) {
+  els.push({ k: "rect", x, y, w, h, fill: C.paper });
+  const p = (s.photos || {})[key];
+  if (p && p.src) {
+    const sc = Math.min(w / p.w, h / p.h), iw = p.w * sc, ih = p.h * sc;
+    els.push({ k: "img", x: x + (w - iw) / 2, y: y + (h - ih) / 2, w: iw, h: ih, src: p.src, photo: key, slide: s.id });
+  } else {
+    els.push({ k: "text", x, y: y + h / 2 - 0.2, w, h: 0.4, text: "No photo · " + label, size: 9, color: C.ph, align: "center", photo: key, slide: s.id, ph: true });
+  }
+}
+function noteEls(els, s, key, label, x, y, w, h) {
+  els.push({ k: "rect", x, y, w, h, fill: C.paper });
+  els.push({ k: "text", x, y, w, h: 0.32, text: label.toUpperCase(), size: 7.5, bold: true, color: C.muted, edit: { kind: "text", path: "notes." + key, label }, slide: s.id });
+  const txt = (s.notes || {})[key] || "";
+  els.push({ k: "text", x, y: y + 0.26, w, h: h - 0.26, text: txt || "No comments", ph: !txt, size: 11, min: 6.5, fit: true, color: txt ? C.ink : C.ph, edit: { kind: "text", path: "notes." + key, label }, slide: s.id, path: "notes." + key });
+}
+function footerEls(els, idx, total) {
+  const left = ["Style Review", S.season, S.fitting].filter(Boolean).join("   ·   ");
+  els.push({ k: "text", x: M, y: H - 0.48, w: 8, h: 0.3, text: left, size: 7.5, color: C.muted });
+  els.push({ k: "text", x: W - M - 4, y: H - 0.48, w: 4, h: 0.3, text: `${fmtDate(S.date, { day: "numeric", month: "short", year: "numeric" })}   ·   ${idx} / ${total}`, size: 7.5, color: C.muted, align: "right" });
+}
+function layoutLook(s, idx, total) {
+  const els = [], st = STATUSES.find((x) => x.id === s.status) || STATUSES[0];
+  const hdr = { kind: "header" };
+  els.push({ k: "text", x: M - PAD, y: 0.26, w: 1.45, h: 0.95, text: s.look || "—", font: "display", size: 40, color: C.ink, edit: hdr, slide: s.id });
+  els.push({ k: "text", x: M + 1.35, y: 0.3, w: 7.6, h: 0.5, text: s.name || "Untitled look", ph: !s.name, size: 20, min: 12, fit: true, bold: true, color: s.name ? C.ink : C.ph, edit: hdr, slide: s.id });
+  const meta = [s.code, s.proto, s.model && "Fit model " + s.model].filter(Boolean).join("   ·   ");
+  els.push({ k: "text", x: M + 1.35, y: 0.78, w: 7.6, h: 0.34, text: meta || "Style code · proto · fit model", ph: !meta, size: 10, color: meta ? C.muted : C.ph, edit: hdr, slide: s.id });
+  els.push({ k: "pill", x: W - M - 2.7, y: 0.42, w: 2.7, h: 0.42, text: st.label, fill: st.hex, size: 10, bold: true, edit: hdr, slide: s.id });
+  els.push({ k: "line", x: M, y: 1.3, w: W - 2 * M });
+  const slots = TEMPLATES[s.template].slots, y0 = 1.5, y1 = H - 0.62, LW = 9.05, bodyH = y1 - y0;
+  if (slots.length === 1) {
+    const [key, label] = slots[0];
+    photoEls(els, s, key, label, M, y0, 3.6, Math.min(4.8, bodyH));
+    noteEls(els, s, key, label, M + 3.85, y0, LW - 3.85, bodyH);
+  } else {
+    const n = slots.length, g = 0.25, cw = (LW - (n - 1) * g) / n, ph = Math.min(cw * 4 / 3, bodyH * 0.64);
+    slots.forEach(([key, label], i) => {
+      const x = M + i * (cw + g);
+      photoEls(els, s, key, label, x, y0, cw, ph);
+      noteEls(els, s, key, label, x, y0 + ph + 0.15, cw, bodyH - ph - 0.15);
+    });
+  }
+  const RX = M + LW + 0.3, RW = W - M - RX, oh = (bodyH - 0.2) / 2;
+  noteEls(els, s, "overall", "Overall comments", RX, y0, RW, oh);
+  noteEls(els, s, "actions", "Actions", RX, y0 + oh + 0.2, RW, oh);
+  footerEls(els, idx, total);
+  return els;
+}
+function layoutCover(total) {
+  const els = [], ed = { kind: "cover" };
+  els.push({ k: "text", x: M, y: 1.35, w: 10, h: 0.35, text: "FITTING REVIEW", size: 9, bold: true, color: C.muted, edit: ed });
+  els.push({ k: "text", x: M - PAD, y: 1.75, w: 12, h: 1.3, text: S.season || "Season / collection", ph: !S.season, font: "display", size: 44, min: 24, fit: true, color: S.season ? C.ink : C.ph, edit: ed });
+  els.push({ k: "text", x: M, y: 3.05, w: 12, h: 0.6, text: S.fitting || "Fitting", size: 20, color: C.ink, edit: ed });
+  els.push({ k: "line", x: M, y: 3.85, w: 5.5 });
+  const when = [fmtDate(S.date, { weekday: "long", day: "numeric", month: "long", year: "numeric" }), S.time].filter(Boolean).join(", ");
+  els.push({ k: "text", x: M, y: 4.0, w: 8, h: 0.36, text: when, size: 11, color: C.ink, edit: ed });
+  els.push({ k: "text", x: M, y: 4.36, w: 8, h: 0.62, text: S.attendees ? "Attendees: " + S.attendees : "Add attendees", ph: !S.attendees, size: 11, min: 8, fit: true, color: S.attendees ? C.muted : C.ph, edit: ed });
+  els.push({ k: "text", x: M, y: 5.1, w: 8, h: 0.36, text: `${total} look${total === 1 ? "" : "s"} reviewed`, size: 11, bold: true, color: C.ink });
+  let x = M;
+  STATUSES.forEach((st) => {
+    const n = S.slides.filter((s) => s.status === st.id).length; if (!n) return;
+    const label = `${n}  ${st.label}`, w = 0.5 + label.length * 0.085;
+    els.push({ k: "pill", x, y: 5.55, w, h: 0.38, text: label, fill: st.hex, size: 9.5, bold: true });
+    x += w + 0.15;
+  });
+  footerEls(els, 1, total + 1);
+  return els;
+}
+function deckLayouts() {
+  const total = S.slides.length;
+  return [{ cover: true, els: layoutCover(total) }].concat(S.slides.map((s, i) => ({ slide: s, els: layoutLook(s, i + 2, total + 1) })));
+}
+
+/* ================= review rendering ================= */
+const pct = (v, of) => (v / of * 100).toFixed(3) + "%";
+function slideHTML(els) {
+  return els.map((e) => {
+    const pos = `left:${pct(e.x, W)};top:${pct(e.y, H)};width:${pct(e.w, W)};height:${pct(e.h || 0, H)}`;
+    const editAttr = e.edit ? ` data-edit="${esc(JSON.stringify(e.edit))}" data-slide="${e.slide || ""}"` : "";
+    const photoAttr = e.photo ? ` data-photo="${e.photo}" data-slide="${e.slide}"` : "";
+    if (e.k === "rect") return `<div class="el rect" style="${pos};background:#${e.fill}"></div>`;
+    if (e.k === "line") return `<div class="el hr" style="${pos}"></div>`;
+    if (e.k === "img") return `<div class="el img" style="${pos}"${photoAttr}><img src="${e.src}" alt=""></div>`;
+    if (e.k === "pill") return `<div class="el t pill bold vmid center" style="${pos};background:#${e.fill};color:#fff;font-size:${(e.size / 9.6).toFixed(3)}cqw"${editAttr}>${esc(e.text)}</div>`;
+    const r = resolveText(e);
+    const cls = ["el", "t", e.font === "display" ? "display" : "", e.bold ? "bold" : "", e.align || "", e.ph ? "ph" : "", r.over ? "over" : ""].join(" ");
+    return `<div class="${cls}" style="${pos};font-size:${(r.size / 9.6).toFixed(3)}cqw;color:#${e.color}"${editAttr}${photoAttr}${e.path ? ` data-path="${e.path}"` : ""}>${esc(r.lines.join("\n"))}</div>`;
+  }).join("");
+}
+function renderDeck() {
+  const L = deckLayouts(), n = S.slides.length;
+  $("#deck").innerHTML = L.map((d, i) => {
+    if (d.cover) return `<div class="rs-wrap" data-rs="cover"><div class="rs-bar"><b>Cover</b><span>Generated from the fitting details</span></div><div class="rs">${slideHTML(d.els)}</div></div>`;
+    const s = d.slide, t = TEMPLATES[s.template];
+    return `<div class="rs-wrap" data-rs="${s.id}" id="rs-${s.id}">
+      <div class="rs-bar"><b>Look ${esc(s.look)}</b><span>${esc(t.name)}</span><span class="spacer"></span>
+        <button class="icon-btn" data-move="-1" data-id="${s.id}" aria-label="Move earlier" ${i === 1 ? "disabled" : ""}>${ICON.upArrow}</button>
+        <button class="icon-btn" data-move="1" data-id="${s.id}" aria-label="Move later" ${i === n ? "disabled" : ""}>${ICON.downArrow}</button>
+        <button class="icon-btn" data-goto="${s.id}" aria-label="Open in Capture">${ICON.pen}</button>
+      </div>
+      <div class="rs">${slideHTML(d.els)}</div></div>`;
+  }).join("");
+  markEditing();
+  renderReady();
+}
+function rerenderReviewSlide(id) {
+  const wrap = id === "cover" ? $('[data-rs="cover"]') : $(`[data-rs="${id}"]`);
+  if (!wrap) return;
+  const L = deckLayouts();
+  const d = id === "cover" ? L[0] : L.find((x) => x.slide && x.slide.id === id);
+  wrap.querySelector(".rs").innerHTML = slideHTML(d.els);
+  markEditing();
+  renderReady();
+}
+function issues() {
+  const out = [];
+  S.slides.forEach((s) => {
+    const t = TEMPLATES[s.template], probs = [];
+    const missing = t.slots.filter(([k]) => !(s.photos || {})[k]).length;
+    if (missing) probs.push(`${missing} photo${missing > 1 ? "s" : ""} missing`);
+    if (!s.name) probs.push("no style name");
+    if (s.status === "review") probs.push("status still ‘To review’");
+    const over = layoutLook(s, 0, 0).filter((e) => e.k === "text" && e.fit && resolveText(e).over).length;
+    if (over) probs.push(`${over} text box${over > 1 ? "es" : ""} too long to fit`);
+    if (probs.length) out.push({ id: s.id, text: `Look ${s.look}: ${probs.join(" · ")}` });
+  });
+  return out;
+}
+function renderReady() {
+  const list = issues(), el = $("#ready");
+  if (!list.length) {
+    el.innerHTML = `<h2><span class="ok">●</span> Ready to share</h2><p>${S.slides.length} looks plus a cover. Tap any text or photo on a slide to change it, then export.</p>`;
+  } else {
+    el.innerHTML = `<h2><span class="todo">●</span> Check before sharing</h2><p>Tap any text or photo on a slide to edit it. Red outlines mark text that will be shrunk too small to read.</p>
+      <ul>${list.map((x) => `<li><button data-jump="${x.id}">${esc(x.text)}</button></li>`).join("")}</ul>`;
+  }
+}
+
+/* ================= edit sheet (review mode) ================= */
+let sheetCtx = null;
+function markEditing() {
+  $$(".el.editing").forEach((e) => e.classList.remove("editing"));
+  if (!sheetCtx) return;
+  const wrap = sheetCtx.kind === "cover" ? $('[data-rs="cover"]') : $(`[data-rs="${sheetCtx.slideId}"]`);
+  if (!wrap) return;
+  $$(".el[data-edit]", wrap).forEach((e) => {
+    const ed = JSON.parse(e.dataset.edit);
+    if (ed.kind === sheetCtx.kind && (ed.kind !== "text" || e.dataset.path === sheetCtx.path)) e.classList.add("editing");
+  });
+}
+function closeSheet() {
+  stopDictation();
+  sheetCtx = null; $("#sheet").hidden = true; $("#view-review").classList.remove("sheet-open");
+  markEditing();
+}
+function fitMessage() {
+  if (!sheetCtx || sheetCtx.kind !== "text") return;
+  const s = byId(sheetCtx.slideId);
+  const e = layoutLook(s, 0, 0).find((x) => x.path === sheetCtx.path);
+  const r = e ? resolveText(e) : null, m = $("#fit-msg");
+  if (!r || !m) return;
+  m.className = "fit-msg" + (r.over ? " over" : "");
+  m.textContent = r.over ? "Too long for this box: shorten it or move some of it to Overall comments." : `Fits on the slide at ${r.size} pt.`;
+}
+function openSheet(ed, slideId) {
+  stopDictation();
+  sheetCtx = { kind: ed.kind, path: ed.path, slideId };
+  const body = $("#sheet-body"), title = $("#sheet-title");
+  if (ed.kind === "text") {
+    const s = byId(slideId);
+    title.textContent = `Look ${s.look} · ${ed.label}`;
+    body.innerHTML = `<div class="note"><div class="note-head"><label class="note-label" for="sh-text">${esc(ed.label)}</label>
+        <button class="mic" id="sh-mic" aria-pressed="false">${ICON.mic}<span class="pulse"></span><span class="mic-l">Dictate</span></button></div>
+      <textarea id="sh-text" class="field-ta">${esc(getPath(s, ed.path))}</textarea><p class="interim" id="sh-interim"></p></div>
+      <p class="fit-msg" id="fit-msg"></p>`;
+    const ta = $("#sh-text");
+    ta.style.cssText = "width:100%;border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:10px 12px;min-height:160px;resize:vertical";
+    const upd = (v) => { setPath(s, ed.path, v); save(); rerenderReviewSlide(s.id); fitMessage(); };
+    ta.addEventListener("input", () => upd(ta.value));
+    $("#sh-mic").addEventListener("click", () => toggleDictation("sheet", ta, $("#sh-mic"), $("#sh-interim"), upd, false));
+    fitMessage();
+    setTimeout(() => { if (!matchMedia("(pointer: coarse)").matches) ta.focus(); }, 30);
+  } else if (ed.kind === "header") {
+    const s = byId(slideId);
+    title.textContent = `Look ${s.look} · Header`;
+    body.innerHTML = `
+      <div class="field"><label for="sh-look">Look number</label><input id="sh-look" data-h="look" value="${esc(s.look)}"></div>
+      <div class="field"><label for="sh-name">Style name</label><input id="sh-name" data-h="name" value="${esc(s.name)}"></div>
+      <div class="field"><label for="sh-code">Style code</label><input id="sh-code" data-h="code" value="${esc(s.code)}" style="font-family:var(--f-mono)"></div>
+      <div class="field"><label for="sh-proto">Sample</label><select id="sh-proto" data-h="proto">${PROTOS.map((p) => `<option ${p === s.proto ? "selected" : ""}>${p}</option>`).join("")}</select></div>
+      <div class="field"><label for="sh-model">Fit model / size</label><input id="sh-model" data-h="model" value="${esc(s.model)}"></div>
+      <div class="field"><label for="sh-status">Status</label><select id="sh-status" data-h="status">${STATUSES.map((x) => `<option value="${x.id}" ${x.id === s.status ? "selected" : ""}>${x.label}</option>`).join("")}</select></div>`;
+    $$("[data-h]", body).forEach((inp) => inp.addEventListener("input", () => { s[inp.dataset.h] = inp.value; save(); rerenderReviewSlide(s.id); rerenderReviewSlide("cover"); $(".rs-bar b", $(`[data-rs="${s.id}"]`)).textContent = "Look " + s.look; }));
+  } else if (ed.kind === "cover") {
+    title.textContent = "Cover";
+    body.innerHTML = `
+      <div class="field"><label for="sc-season">Season / collection</label><input id="sc-season" data-c="season" value="${esc(S.season)}"></div>
+      <div class="field"><label for="sc-fitting">Fitting</label><input id="sc-fitting" data-c="fitting" value="${esc(S.fitting)}"></div>
+      <div class="field"><label for="sc-date">Date</label><input id="sc-date" type="date" data-c="date" value="${esc(S.date)}"></div>
+      <div class="field"><label for="sc-time">Start time</label><input id="sc-time" type="time" data-c="time" value="${esc(S.time)}"></div>
+      <div class="field"><label for="sc-att">Attendees</label><textarea id="sc-att" data-c="attendees" rows="3">${esc(S.attendees)}</textarea></div>`;
+    $$("[data-c]", body).forEach((inp) => inp.addEventListener("input", () => { S[inp.dataset.c] = inp.value; save(); renderDeck(); renderFitting(); }));
+  }
+  $("#sheet").hidden = false; $("#view-review").classList.add("sheet-open");
+  markEditing();
+}
+
+/* ================= capture rendering ================= */
+function renderRail() {
+  $("#rail").innerHTML = S.slides.map((s) => {
+    const t = TEMPLATES[s.template], have = t.slots.filter(([k]) => (s.photos || {})[k]).length;
+    return `<button class="rail-item" data-id="${s.id}" aria-current="${s.id === cur().id}">
+      <span class="r-num">${esc(s.look)}</span>
+      <span class="r-text"><span class="r-name">${esc(s.name || "Untitled look")}</span><span class="r-code">${esc(s.code || t.name)}</span></span>
+      <span class="r-side"><span class="dot st-${s.status}" title="${esc((STATUSES.find((x) => x.id === s.status) || {}).label)}"></span><span class="r-count">${have}/${t.slots.length}</span></span>
+    </button>`;
+  }).join("") + `<button class="add-look" id="add-look">+ Add look</button>`;
+}
+function photoInner(s, key, label) {
+  const p = (s.photos || {})[key];
+  if (p) return `<img src="${p.src}" alt="${esc(label)} photo"><span class="photo-tag slot-label">${esc(label)}</span>
+    <div class="photo-tools"><button data-act="camera" aria-label="Retake ${esc(label)}">${ICON.cam}Retake</button><button data-act="upload">${ICON.up}Replace</button><button data-act="remove" aria-label="Remove ${esc(label)} photo">${ICON.del}</button></div>`;
+  return `<span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+    <div class="empty"><span class="slot-label">${esc(label)}</span>
+      <div class="photo-btns"><button data-act="camera">${ICON.cam}Camera</button><button data-act="upload">${ICON.up}Upload</button></div>
+      <span class="drop-hint">or drop a photo here</span></div>`;
+}
+function noteHTML(s, key, label, extra = "") {
+  return `<div class="note" data-note="${key}">
+    <div class="note-head"><label class="note-label" for="n-${key}">${esc(label)}</label>
+      <div class="note-tools">${extra}<button class="mic" data-mic="${key}" aria-pressed="false" aria-label="Dictate ${esc(label)}">${ICON.mic}<span class="pulse"></span><span class="mic-l">Dictate</span></button></div></div>
+    <textarea id="n-${key}" data-n="${key}" placeholder="Tap Dictate and talk, or type">${esc((s.notes || {})[key] || "")}</textarea>
+    <p class="interim" id="i-${key}"></p></div>`;
+}
+let sampleFn = null;
+function renderEditor() {
+  stopDictation();
+  const s = cur(), t = TEMPLATES[s.template];
+  const ai = sampleFn ? `<button class="ai-btn" id="ai-actions" title="Draft actions from this look's notes">${ICON.spark}Draft from notes</button>` : "";
+  $("#editor").innerHTML = `
+    <div class="slide-head">
+      <div class="look-box"><label class="lbl" for="f-look">Look</label><input id="f-look" class="look-num" data-f="look" value="${esc(s.look)}" inputmode="numeric" autocomplete="off"></div>
+      <div class="meta">
+        <input id="f-name" class="f-name" data-f="name" value="${esc(s.name)}" placeholder="Style name, e.g. Double-face wool coat" aria-label="Style name">
+        <div class="meta-row">
+          <input id="f-code" class="mono" data-f="code" value="${esc(s.code)}" placeholder="Style code" aria-label="Style code" autocapitalize="characters">
+          <select id="f-proto" data-f="proto" aria-label="Sample">${PROTOS.map((p) => `<option ${p === s.proto ? "selected" : ""}>${p}</option>`).join("")}</select>
+          <input id="f-model" data-f="model" value="${esc(s.model)}" placeholder="Fit model / size" aria-label="Fit model or size">
+        </div>
+      </div>
+      <div class="head-tools">
+        <button class="icon-btn" id="dup" aria-label="Duplicate look" title="Duplicate look (for a re-fit)">${ICON.copy}</button>
+        <button class="icon-btn" id="del" aria-label="Delete look" title="Delete look">${ICON.del}</button>
+      </div>
+    </div>
+    <div class="status-row" role="radiogroup" aria-label="Status">
+      ${STATUSES.map((x) => `<button class="chip st-${x.id}" role="radio" data-status="${x.id}" aria-checked="${x.id === s.status}"><span class="dot"></span>${x.label}</button>`).join("")}
+    </div>
+    <div class="slots n${t.slots.length}">
+      ${t.slots.map(([k, label]) => `<section class="pair"><div class="photo ${(s.photos || {})[k] ? "has" : ""}" data-slot="${k}">${photoInner(s, k, label)}</div>${noteHTML(s, k, label + " notes")}</section>`).join("")}
+    </div>
+    <div class="wrapup">${noteHTML(s, "overall", "Overall comments")}${noteHTML(s, "actions", "Actions", ai)}</div>`;
+  $$("#editor textarea").forEach(autogrow);
+}
+function renderPhoto(key) {
+  const s = cur(), el = $(`.photo[data-slot="${key}"]`);
+  if (!el) return;
+  const label = (TEMPLATES[s.template].slots.find(([k]) => k === key) || [])[1];
+  el.classList.toggle("has", !!(s.photos || {})[key]);
+  el.innerHTML = photoInner(s, key, label);
+}
+function renderFitting() {
+  $("#fit-title").textContent = S.season || "New fitting";
+  $("#fit-sub").textContent = [S.fitting, fmtDate(S.date), S.time].filter(Boolean).join(" · ");
+  $$("[data-s]").forEach((i) => { if (document.activeElement !== i) i.value = S[i.dataset.s] || ""; });
+  renderDue();
+  $("#example-note").hidden = !S.example;
+}
+function renderDue() {
+  const el = $("#due"); const start = new Date(`${S.date}T${S.time || "09:00"}`);
+  if (isNaN(start)) { el.textContent = ""; return; }
+  const due = new Date(start.getTime() + 864e5), left = due - Date.now();
+  const when = due.toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
+  if (left > 0) { el.className = "due"; el.textContent = `Share by ${when} · ${Math.ceil(left / 36e5)}h left`; }
+  else { el.className = "due late"; el.textContent = `24h passed (${when})`; }
+}
+function renderTemplates() {
+  const sk = {
+    look3: '<rect x="6" y="8" width="26" height="34" fill="#DDDED7"/><rect x="36" y="8" width="26" height="34" fill="#DDDED7"/><rect x="66" y="8" width="26" height="34" fill="#DDDED7"/><rect x="6" y="45" width="26" height="12" fill="#EEEEE9"/><rect x="36" y="45" width="26" height="12" fill="#EEEEE9"/><rect x="66" y="45" width="26" height="12" fill="#EEEEE9"/>',
+    detail: '<rect x="6" y="8" width="26" height="34" fill="#DDDED7"/><rect x="36" y="8" width="26" height="34" fill="#C9CBC1"/><rect x="66" y="8" width="26" height="34" fill="#C9CBC1"/><circle cx="49" cy="25" r="5" fill="none" stroke="#999" /><circle cx="79" cy="25" r="5" fill="none" stroke="#999"/><rect x="6" y="45" width="26" height="12" fill="#EEEEE9"/><rect x="36" y="45" width="26" height="12" fill="#EEEEE9"/><rect x="66" y="45" width="26" height="12" fill="#EEEEE9"/>',
+    compare: '<rect x="6" y="8" width="41" height="34" fill="#DDDED7"/><rect x="51" y="8" width="41" height="34" fill="#C9CBC1"/><rect x="6" y="45" width="41" height="12" fill="#EEEEE9"/><rect x="51" y="45" width="41" height="12" fill="#EEEEE9"/>',
+    single: '<rect x="6" y="8" width="34" height="49" fill="#DDDED7"/><rect x="44" y="8" width="48" height="49" fill="#EEEEE9"/>'
+  };
+  $("#tpl-grid").innerHTML = Object.entries(TEMPLATES).map(([id, t]) => `<button class="tpl" data-tpl="${id}">
+    <svg viewBox="0 0 130 64" aria-hidden="true">${sk[id]}<rect x="97" y="8" width="27" height="23" fill="#EEEEE9"/><rect x="97" y="34" width="27" height="23" fill="#EEEEE9"/></svg>
+    <b>${t.name}</b><span>${t.hint}</span></button>`).join("");
+}
+function renderAll() {
+  renderFitting();
+  if (mode === "capture") { renderRail(); renderEditor(); } else renderDeck();
+}
+
+/* ================= mode switching ================= */
+function setMode(m) {
+  if (m === mode) return;
+  stopDictation(); closeSheet();
+  mode = m;
+  $("#tab-capture").setAttribute("aria-selected", m === "capture");
+  $("#tab-review").setAttribute("aria-selected", m === "review");
+  $("#view-capture").hidden = m !== "capture";
+  $("#view-review").hidden = m !== "review";
+  renderAll();
+  window.scrollTo({ top: 0 });
+}
+$("#tab-capture").addEventListener("click", () => setMode("capture"));
+$("#tab-review").addEventListener("click", () => setMode("review"));
+
+/* ================= capture events ================= */
+$("#rail").addEventListener("click", (e) => {
+  const b = e.target.closest(".rail-item");
+  if (b) { S.current = b.dataset.id; save(); renderRail(); renderEditor(); $("#picker").hidden = true; return; }
+  if (e.target.closest("#add-look")) { $("#picker").hidden = false; $("#picker").scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+});
+$("#picker-close").addEventListener("click", () => ($("#picker").hidden = true));
+$("#tpl-grid").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-tpl]"); if (!b) return;
+  const s = blankSlide(b.dataset.tpl, nextLook());
+  const prev = cur(); if (prev) { s.model = prev.model; s.proto = prev.proto; }
+  S.slides.push(s); S.current = s.id; S.example = false; save();
+  $("#picker").hidden = true; renderFitting(); renderRail(); renderEditor();
+  $("#f-name").focus();
+});
+
+const ed = $("#editor");
+ed.addEventListener("input", (e) => {
+  const s = cur(), t = e.target;
+  if (t.dataset.f) { s[t.dataset.f] = t.value; save(); renderRail(); }
+  if (t.dataset.n) { s.notes = s.notes || {}; s.notes[t.dataset.n] = t.value; save(); autogrow(t); }
+});
+ed.addEventListener("change", (e) => { if (e.target.dataset.f) { cur()[e.target.dataset.f] = e.target.value; save(); renderRail(); } });
+let delArm = null;
+ed.addEventListener("click", async (e) => {
+  const s = cur();
+  const chip = e.target.closest("[data-status]");
+  if (chip) { s.status = chip.dataset.status; save(); $$(".chip", ed).forEach((c) => c.setAttribute("aria-checked", c === chip)); renderRail(); return; }
+  const mic = e.target.closest("[data-mic]");
+  if (mic) {
+    const k = mic.dataset.mic, ta = $(`#n-${k}`);
+    toggleDictation("cap-" + s.id + "-" + k, ta, mic, $(`#i-${k}`), (v) => { s.notes = s.notes || {}; s.notes[k] = v; save(); });
+    return;
+  }
+  const act = e.target.closest("[data-act]");
+  if (act) {
+    const key = act.closest(".photo").dataset.slot;
+    if (act.dataset.act === "remove") { delete s.photos[key]; save(); renderPhoto(key); renderRail(); return; }
+    pendingPhoto = { slideId: s.id, key };
+    $(act.dataset.act === "camera" ? "#in-camera" : "#in-upload").click();
+    return;
+  }
+  if (e.target.closest("#dup")) {
+    const c = JSON.parse(JSON.stringify(s)); c.id = uid(); c.look = s.look; c.status = "review";
+    if (TEMPLATES[c.template].slots.length) { c.notes = { overall: "", actions: "" }; c.photos = {}; c.proto = PROTOS[Math.min(PROTOS.indexOf(s.proto) + 1, PROTOS.length - 1)] || s.proto; }
+    S.slides.splice(S.slides.indexOf(s) + 1, 0, c); S.current = c.id; save(); renderRail(); renderEditor();
+    toast(`Look ${c.look} duplicated as ${c.proto} with empty photos and notes.`);
+    return;
+  }
+  const del = e.target.closest("#del");
+  if (del) {
+    if (delArm !== s.id) { delArm = s.id; del.classList.add("arm"); del.textContent = "Tap again to delete"; setTimeout(() => { if (delArm === s.id) { delArm = null; renderEditor(); } }, 3500); return; }
+    delArm = null;
+    const i = S.slides.indexOf(s); S.slides.splice(i, 1);
+    if (!S.slides.length) S.slides.push(blankSlide());
+    S.current = S.slides[Math.max(0, i - 1)].id; save(); renderRail(); renderEditor();
+    toast(`Look ${s.look} deleted.`);
+    return;
+  }
+  if (e.target.closest("#ai-actions")) draftActions(e.target.closest("#ai-actions"));
+});
+// drag and drop photos
+ed.addEventListener("dragover", (e) => { const p = e.target.closest(".photo"); if (p) { e.preventDefault(); p.classList.add("drag"); } });
+ed.addEventListener("dragleave", (e) => { const p = e.target.closest(".photo"); if (p) p.classList.remove("drag"); });
+ed.addEventListener("drop", (e) => {
+  const p = e.target.closest(".photo"); if (!p) return;
+  e.preventDefault(); p.classList.remove("drag");
+  const f = [...(e.dataTransfer.files || [])].find((x) => x.type.startsWith("image/"));
+  if (f) { pendingPhoto = { slideId: cur().id, key: p.dataset.slot }; takePhoto(f); }
+});
+async function takePhoto(file) {
+  const pp = pendingPhoto; pendingPhoto = null;
+  if (!pp || !file) return;
+  try {
+    const photo = await fileToPhoto(file);
+    const s = byId(pp.slideId); s.photos = s.photos || {}; s.photos[pp.key] = photo; S.example = false; save();
+    if (mode === "capture" && cur().id === s.id) { renderPhoto(pp.key); renderRail(); renderFitting(); }
+    if (mode === "review") rerenderReviewSlide(s.id);
+  } catch (e) { toast("That photo couldn't be read. Try a JPEG or PNG."); }
+}
+["#in-camera", "#in-upload"].forEach((sel) => $(sel).addEventListener("change", (e) => { takePhoto(e.target.files[0]); e.target.value = ""; }));
+
+/* ================= fitting details ================= */
+$("#fitting").addEventListener("input", (e) => { const k = e.target.dataset.s; if (!k) return; S[k] = e.target.value; save(); renderFitting(); });
+$("#fitting").addEventListener("change", (e) => { const k = e.target.dataset.s; if (!k) return; S[k] = e.target.value; save(); renderFitting(); if (k === "lang") toast("Dictation language changed."); });
+let newArm = false;
+async function newFitting(btn) {
+  if (!newArm) { newArm = true; const old = btn.textContent; btn.textContent = "Tap again: this clears the current fitting"; setTimeout(() => { newArm = false; btn.textContent = old; }, 4000); return; }
+  newArm = false; stopDictation();
+  S = blankSession(); S.current = S.slides[0].id; save();
+  $("#fitting").open = true; setMode("capture"); renderAll();
+  $("#s-season").focus();
+  toast("New fitting started. Add the season, then your first look.");
+}
+$("#new-fitting").addEventListener("click", (e) => newFitting(e.currentTarget));
+$("#example-clear").addEventListener("click", (e) => newFitting(e.currentTarget));
+
+/* ================= review events ================= */
+$("#deck").addEventListener("click", (e) => {
+  const mv = e.target.closest("[data-move]");
+  if (mv) {
+    const i = S.slides.findIndex((s) => s.id === mv.dataset.id), j = i + Number(mv.dataset.move);
+    if (j < 0 || j >= S.slides.length) return;
+    [S.slides[i], S.slides[j]] = [S.slides[j], S.slides[i]]; save(); renderDeck();
+    $(`#rs-${mv.dataset.id}`)?.scrollIntoView({ block: "nearest" });
+    return;
+  }
+  const go = e.target.closest("[data-goto]");
+  if (go) { S.current = go.dataset.goto; setMode("capture"); return; }
+  const ph = e.target.closest("[data-photo]");
+  if (ph) { pendingPhoto = { slideId: ph.dataset.slide, key: ph.dataset.photo }; $("#in-upload").click(); return; }
+  const el = e.target.closest("[data-edit]");
+  if (el) openSheet(JSON.parse(el.dataset.edit), el.dataset.slide);
+});
+$("#ready").addEventListener("click", (e) => { const j = e.target.closest("[data-jump]"); if (j) $(`#rs-${j.dataset.jump}`)?.scrollIntoView({ behavior: "smooth", block: "start" }); });
+$("#sheet-done").addEventListener("click", closeSheet);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheetCtx) closeSheet(); });
+
+/* ================= AI: draft actions ================= */
+async function draftActions(btn) {
+  const s = cur(), t = TEMPLATES[s.template];
+  const notes = t.slots.map(([k, l]) => `${l}: ${(s.notes || {})[k] || "-"}`).concat([`Overall: ${(s.notes || {}).overall || "-"}`]).join("\n");
+  if (!notes.replace(/[-\s\w]+:\s*-\n?/g, "").trim()) { toast("Add some notes first, then draft the actions."); return; }
+  btn.disabled = true; const old = btn.innerHTML; btn.textContent = "Drafting…";
+  try {
+    const prompt = `You help a luxury fashion product development team after a garment fitting.
+Turn the fitting notes below into a short list of concrete actions. Give each action one owner from: Design, Pattern, Product Dev, Factory, Merch.
+Keep every measurement and number exactly as written. Do not add anything that is not in the notes. Write the actions in the same language as the notes, in a short imperative style.
+Reply with JSON only, shaped {"actions":[{"owner":"Pattern","action":"Reduce shoulder by 0.5 cm each side"}]}.
+
+Look ${s.look} — ${s.name || "untitled"} (${s.proto})
+${notes}`;
+    const r = await sampleFn.json(prompt, { modelTier: "quick" });
+    const lines = (r && r.actions || []).map((a) => `${a.owner}: ${a.action}`);
+    if (!lines.length) { toast("No actions found in these notes."); return; }
+    const ta = $("#n-actions"), existing = ta.value.trim();
+    ta.value = existing ? existing + "\n" + lines.join("\n") : lines.join("\n");
+    s.notes = s.notes || {}; s.notes.actions = ta.value; save(); autogrow(ta);
+    toast("Actions drafted. Check them and edit before sharing.");
+  } catch (e) {
+    if (e && e.code === "not_granted") { toast("Drafting needs your permission to use Claude."); $("#ai-actions")?.remove(); }
+    else if (e && e.code === "rate_limited") toast("Too many requests just now. Try again in a minute.");
+    else toast("Couldn't draft actions this time. Your notes are unchanged.");
+  } finally { btn.disabled = false; btn.innerHTML = old; }
+}
+
+/* ================= export ================= */
+function fileBase() {
+  const raw = [S.season || "Style Review", S.fitting, S.date].filter(Boolean).join(" ");
+  return raw.replace(/[^\p{L}\p{N}]+/gu, "_").replace(/^_|_$/g, "").slice(0, 80) || "Style_Review";
+}
+async function deliver(blob, filename, mime) {
+  const dl = await downloadsP;
+  if (dl) {
+    try { await dl.save({ filename, data: blob }); toast(`Saved ${filename}`); }
+    catch (e) {
+      if (e && e.code === "declined") toast("Save cancelled. Tap export again and choose Save to keep the file.");
+      else if (e && e.code === "rate_limited") toast("A save prompt is already open. Finish that one first.");
+      else toast(`The file couldn't be saved in this preview (${(e && e.code) || "unknown"}). Open index.html from the zip in Chrome or Safari to export.`, 8000);
+    }
+    return;
+  }
+  if (inPreview) { toast("This preview isn't allowed to save files (no download permission). Open index.html from the zip in Chrome or Safari to export.", 8000); return; }
+  const file = new File([blob], filename, { type: mime });
+  if (matchMedia("(pointer: coarse)").matches && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: filename }); return; }
+    catch (e) { if (e.name === "AbortError") return; }
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  toast(`Exported ${filename}`);
+}
+function speakerNotes(s) {
+  const t = TEMPLATES[s.template];
+  return t.slots.map(([k, l]) => `${l}: ${(s.notes || {})[k] || "—"}`).concat(WRAP_NOTES.map(([k, l]) => `${l}: ${(s.notes || {})[k] || "—"}`)).join("\n\n");
+}
+async function buildPptx() {
+  await lib("pptx");
+  const p = new window.PptxGenJS();
+  p.layout = "LAYOUT_WIDE"; p.title = [S.season, S.fitting].filter(Boolean).join(" — "); p.company = "Style Review";
+  for (const d of deckLayouts()) {
+    const sl = p.addSlide(); sl.background = { color: "FFFFFF" };
+    for (const e of d.els) {
+      if (e.k === "rect") sl.addShape(p.ShapeType.rect, { x: e.x, y: e.y, w: e.w, h: e.h, fill: { color: e.fill }, line: { color: e.fill, width: 0 } });
+      else if (e.k === "line") sl.addShape(p.ShapeType.line, { x: e.x, y: e.y, w: e.w, h: 0, line: { color: C.line, width: 0.75 } });
+      else if (e.k === "img") sl.addImage({ data: e.src.replace(/^data:/, ""), x: e.x, y: e.y, w: e.w, h: e.h });
+      else if (e.k === "pill") {
+        sl.addShape(p.ShapeType.roundRect, { x: e.x, y: e.y, w: e.w, h: e.h, rectRadius: e.h / 2, fill: { color: e.fill }, line: { color: e.fill, width: 0 } });
+        sl.addText(e.text, { x: e.x, y: e.y, w: e.w, h: e.h, fontFace: "Arial", fontSize: e.size, bold: true, color: "FFFFFF", align: "center", valign: "middle", margin: 0 });
+      } else {
+        const r = resolveText(e);
+        sl.addText(e.text, { x: e.x, y: e.y, w: e.w, h: e.h, fontFace: e.font === "display" ? "Georgia" : "Arial", fontSize: r.size, bold: !!e.bold, italic: !!e.ph, color: e.color, align: e.align || "left", valign: "top", margin: PAD * 72, lineSpacingMultiple: 1.05, fit: "none", wrap: true });
+      }
+    }
+    if (d.slide) sl.addNotes(speakerNotes(d.slide));
+  }
+  return p.write({ outputType: "blob" });
+}
+async function buildPdf() {
+  await lib("pdf");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "landscape", unit: "in", format: [W, H], compress: true });
+  doc.setProperties({ title: [S.season, S.fitting].filter(Boolean).join(" — "), creator: "Style Review" });
+  doc.setLineHeightFactor(LH);
+  deckLayouts().forEach((d, i) => {
+    if (i) doc.addPage([W, H], "landscape");
+    for (const e of d.els) {
+      if (e.k === "rect") { doc.setFillColor("#" + e.fill); doc.rect(e.x, e.y, e.w, e.h, "F"); }
+      else if (e.k === "line") { doc.setDrawColor("#" + C.line); doc.setLineWidth(0.75 / 72); doc.line(e.x, e.y, e.x + e.w, e.y); }
+      else if (e.k === "img") doc.addImage(e.src, "JPEG", e.x, e.y, e.w, e.h, undefined, "FAST");
+      else if (e.k === "pill") {
+        doc.setFillColor("#" + e.fill); doc.roundedRect(e.x, e.y, e.w, e.h, e.h / 2, e.h / 2, "F");
+        doc.setFont("helvetica", "bold"); doc.setFontSize(e.size); doc.setTextColor("#FFFFFF");
+        doc.text(e.text, e.x + e.w / 2, e.y + e.h / 2, { align: "center", baseline: "middle" });
+      } else {
+        const r = resolveText(e);
+        doc.setFont(e.font === "display" ? "times" : "helvetica", e.bold ? "bold" : e.ph ? "italic" : "normal");
+        doc.setFontSize(r.size); doc.setTextColor("#" + e.color);
+        const lh = r.size * LH / 72, maxLines = Math.max(1, Math.floor((e.h - 2 * PAD) / lh + 0.02));
+        const lines = r.over ? r.lines.slice(0, maxLines) : r.lines;
+        const ax = e.align === "right" ? e.x + e.w - PAD : e.align === "center" ? e.x + e.w / 2 : e.x + PAD;
+        lines.forEach((ln, k) => { if (ln) doc.text(ln, ax, e.y + PAD + k * lh + (lh - r.size / 72) / 2, { align: e.align || "left", baseline: "top" }); });
+      }
+    }
+  });
+  return doc.output("blob");
+}
+async function runExport(kind, btn) {
+  stopDictation();
+  btn.disabled = true; const old = btn.innerHTML; btn.lastElementChild.textContent = "Exporting…";
+  try {
+    if (kind === "pptx") await deliver(await buildPptx(), fileBase() + ".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    else await deliver(await buildPdf(), fileBase() + ".pdf", "application/pdf");
+  } catch (e) {
+    console.error(e);
+    toast(e && e.message === "load" ? "The export tool couldn't load. Check the connection and try again." : "Export failed. Try again; if it keeps failing, export the other format.");
+  } finally { btn.disabled = false; btn.innerHTML = old; }
+}
+$("#exp-pptx").addEventListener("click", (e) => runExport("pptx", e.currentTarget));
+$("#exp-pdf").addEventListener("click", (e) => runExport("pdf", e.currentTarget));
+
+/* ================= example fitting ================= */
+function garmentSVG(type, view, tone) {
+  const shapes = {
+    coat: {
+      front: `<path d="M118 58 Q150 48 182 58 L226 84 Q240 150 250 236 L228 242 L214 150 L212 352 L88 352 L86 150 L72 242 L50 236 Q60 150 74 84 Z" fill="${tone}"/><path d="M132 60 L150 128 L168 60 M150 128 L150 352" stroke="rgba(0,0,0,.28)" stroke-width="2" fill="none"/>${[175, 220, 265].map((y) => `<circle cx="138" cy="${y}" r="4.5" fill="#2a2018"/><circle cx="162" cy="${y}" r="4.5" fill="#2a2018"/>`).join("")}`,
+      side: `<path d="M134 58 Q160 50 174 62 L184 150 L194 352 L116 352 L124 150 Z" fill="${tone}"/><path d="M150 72 Q176 140 168 246 L150 246 Q154 150 140 84Z" fill="rgba(0,0,0,.14)"/>`,
+      back: `<path d="M118 58 Q150 48 182 58 L226 84 Q240 150 250 236 L228 242 L214 150 L212 352 L88 352 L86 150 L72 242 L50 236 Q60 150 74 84 Z" fill="${tone}"/><path d="M150 62 L150 352 M86 112 L214 112" stroke="rgba(0,0,0,.25)" stroke-width="2" fill="none"/><path d="M138 230 L150 352 L162 230" stroke="rgba(0,0,0,.22)" stroke-width="2" fill="none"/>`
+    },
+    knit: {
+      front: `<path d="M112 72 Q150 62 188 72 L238 102 L262 252 L238 258 L214 142 L214 304 L86 304 L86 142 L62 258 L38 252 L62 102 Z" fill="${tone}"/><path d="M128 72 Q150 98 172 72" stroke="rgba(0,0,0,.25)" stroke-width="3" fill="none"/>${Array.from({ length: 16 }, (_, i) => `<line x1="${90 + i * 8}" y1="284" x2="${90 + i * 8}" y2="304" stroke="rgba(0,0,0,.18)" stroke-width="2"/>`).join("")}${Array.from({ length: 12 }, (_, i) => `<line x1="${102 + i * 9}" y1="110" x2="${102 + i * 9}" y2="280" stroke="rgba(0,0,0,.07)" stroke-width="3"/>`).join("")}`
+    },
+    dress: {
+      front: `<path d="M128 62 L172 62 L180 122 Q172 152 174 172 L234 352 L66 352 L126 172 Q128 152 120 122 Z" fill="${tone}"/><path d="M128 62 L126 40 M172 62 L174 40" stroke="${tone}" stroke-width="2"/><path d="M120 122 Q150 134 180 122" stroke="rgba(255,255,255,.18)" stroke-width="2" fill="none"/>`
+    }
+  };
+  const vb = view === "zoom" ? "100 160 110 147" : "0 0 300 400";
+  const body = (shapes[type][view] || shapes[type].front);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="600" height="800" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ECEBE6"/><stop offset="1" stop-color="#D6D5CD"/></linearGradient></defs><rect x="-50" y="-50" width="400" height="500" fill="url(#g)"/><ellipse cx="150" cy="362" rx="90" ry="8" fill="rgba(0,0,0,.08)"/>${body}</svg>`;
+}
+async function makeSamplePhoto(type, view, tone) {
+  const svg = garmentSVG(type, view === "zoom" ? "front" : view, tone).replace('viewBox="0 0 300 400"', view === "zoom" ? 'viewBox="100 160 110 147"' : 'viewBox="0 0 300 400"');
+  const img = new Image();
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  await img.decode();
+  const c = document.createElement("canvas"); c.width = 600; c.height = 800;
+  const x = c.getContext("2d"); x.drawImage(img, 0, 0, 600, 800);
+  x.font = "600 18px Arial"; x.fillStyle = "rgba(60,60,55,.55)"; x.textAlign = "right"; x.fillText("EXAMPLE PHOTO", 576, 40);
+  return { src: c.toDataURL("image/jpeg", 0.85), w: 600, h: 800 };
+}
+async function exampleSession() {
+  const tob = "#7A5A3E", ecru = "#BDB49C", bottle = "#2F3B34";
+  const [cf, cs, cb, kf, kz, df] = await Promise.all([
+    makeSamplePhoto("coat", "front", tob), makeSamplePhoto("coat", "side", tob), makeSamplePhoto("coat", "back", tob),
+    makeSamplePhoto("knit", "front", ecru), makeSamplePhoto("knit", "zoom", ecru), makeSamplePhoto("dress", "front", bottle)
+  ]);
+  const a = { ...blankSlide("look3", "04"), code: "W27-CT-0412", name: "Double-face wool coat", proto: "Proto 2", model: "Size 36", status: "comments",
+    photos: { front: cf, side: cs, back: cb },
+    notes: {
+      front: "Shoulder reads slightly wide, bring in 0.5 cm each side. Button stance is good, keep.",
+      side: "Sleeve length good at 61 cm. Hem dips at the back, level it.",
+      back: "Too much volume in the back pleat. Reduce by 2 cm. Check the yoke seam sits straight.",
+      overall: "Fabric handle approved. Next proto in the production colour (tobacco).",
+      actions: "Pattern: reduce shoulder 0.5 cm each side; level the hem; reduce back pleat by 2 cm\nFactory: cut Proto 3 in production colour tobacco"
+    } };
+  const b = { ...blankSlide("detail", "07"), code: "W27-KN-0718", name: "Chunky rib cardigan", proto: "Proto 1", model: "Size 36", status: "reproto",
+    photos: { look: kf, d1: kz },
+    notes: {
+      look: "Body is too short, add 4 cm. Rib pulls across the bust.",
+      d1: "Rib gauge is right. Yarn feels heavy, ask the mill for the lighter 7gg option.",
+      d2: "",
+      overall: "Re-proto in the lighter yarn before we decide.",
+      actions: "Product Dev: request 7gg yarn from the mill\nPattern: add 4 cm body length and ease across the bust"
+    } };
+  const c = { ...blankSlide("compare", "11"), code: "W27-DR-1103", name: "Bias-cut slip dress", proto: "Proto 2", model: "Size 36", status: "review",
+    photos: { prev: df },
+    notes: { prev: "Proto 1: neckline too low and the straps slip off the shoulder.", curr: "", overall: "", actions: "" } };
+  return { v: 1, example: true, season: "SS27 Women's Ready-to-Wear", fitting: "Fitting 3 · Proto review", date: "2026-10-21", time: "10:00",
+    attendees: "Design, Product Development, Pattern, Merchandising", lang: guessLang(), slides: [a, b, c], current: a.id };
+}
+
+/* ================= boot ================= */
+async function boot() {
+  renderTemplates();
+  if (inPreview) $("#preview-note").hidden = false;
+  const saved = await store.get("session");
+  S = saved && saved.slides && saved.slides.length ? saved : await exampleSession();
+  if (!S.current) S.current = S.slides[0].id;
+  renderAll();
+  setInterval(renderDue, 60000);
+  sampleP.then((fn) => { if (fn) { sampleFn = fn; if (mode === "capture") { const box = $('.note[data-note="actions"] .note-tools'); if (box && !$("#ai-actions")) box.insertAdjacentHTML("afterbegin", `<button class="ai-btn" id="ai-actions" title="Draft actions from this look's notes">${ICON.spark}Draft from notes</button>`); } } });
+  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
+  idle(() => { lib("pptx").catch(() => {}); lib("pdf").catch(() => {}); });
+}
+boot();
+})();
+</script>

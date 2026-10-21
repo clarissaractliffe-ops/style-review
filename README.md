@@ -9,7 +9,7 @@ Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 ## What it does
 
 **Capture (during the fitting)**
-- One "look" per slide, numbered like the line-up (Look 04, 07, 11…), with style name, style code, sample stage (Proto 1/2/3, SMS, PP sample, Production), fit model/size and status (To review, Approved, Approved with comments, Re-proto, Dropped).
+- One "look" per slide, numbered like the line-up (Look 04, 07, 11…), with style name, style code, sample stage (Proto 1/2/3, SMS, PP sample, Production), fit model/size.
 - Four slide templates:
   - **Full look**: front, side, back
   - **Detail focus**: full look + two close-ups
@@ -22,10 +22,10 @@ Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 - Autosaves on the device (IndexedDB), so a refresh or a dropped connection loses nothing.
 
 **Review & edit (after the fitting)**
-- Shows the actual slides, exactly as they'll export, including an auto-generated cover with a status summary.
+- Shows the actual slides, exactly as they'll export, including an auto-generated cover.
 - Tap any text to edit it in a side panel (dictation works there too); tap any photo to replace it. Slides re-fit text live and flag boxes that are too long.
 - Reorder looks with up/down arrows.
-- A "Check before sharing" list flags missing photos, missing style names, looks still "To review" and overflowing text.
+- A "Check before sharing" list flags missing photos, missing style names and overflowing text.
 
 **Export**
 - **PowerPoint (.pptx)**: native, editable text boxes and images, 16:9. All notes are also copied into the speaker notes.
@@ -109,7 +109,7 @@ Two open-source libraries are loaded from public CDNs on first export: **PptxGen
   "slides": [{
     "id": "…", "template": "look3", "look": "04",
     "code": "W27-CT-0412", "name": "Double-face wool coat",
-    "proto": "Proto 2", "model": "Size 36", "status": "comments",
+    "proto": "Proto 2", "model": "Size 36",
     "photos": { "front": { "src": "data:image/jpeg…", "w": 1200, "h": 1600 } },
     "notes": { "front": "…", "side": "…", "back": "…", "overall": "…", "actions": "…" }
   }]

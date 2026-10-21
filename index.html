@@ -639,13 +639,12 @@ function footerEls(els, idx, total) {
   els.push({ k: "text", x: W - M - 4, y: H - 0.48, w: 4, h: 0.3, text: `${fmtDate(S.date, { day: "numeric", month: "short", year: "numeric" })}   ·   ${idx} / ${total}`, size: 7.5, color: C.muted, align: "right" });
 }
 function layoutLook(s, idx, total) {
-  const els = [], st = STATUSES.find((x) => x.id === s.status) || STATUSES[0];
+  const els = [];
   const hdr = { kind: "header" };
   els.push({ k: "text", x: M - PAD, y: 0.26, w: 1.45, h: 0.95, text: s.look || "—", font: "display", size: 40, color: C.ink, edit: hdr, slide: s.id });
-  els.push({ k: "text", x: M + 1.35, y: 0.3, w: 7.6, h: 0.5, text: s.name || "Untitled look", ph: !s.name, size: 20, min: 12, fit: true, bold: true, color: s.name ? C.ink : C.ph, edit: hdr, slide: s.id });
+  els.push({ k: "text", x: M + 1.35, y: 0.3, w: W - 2 * M - 1.35, h: 0.5, text: s.name || "Untitled look", ph: !s.name, size: 20, min: 12, fit: true, bold: true, color: s.name ? C.ink : C.ph, edit: hdr, slide: s.id });
   const meta = [s.code, s.proto, s.model && "Fit model " + s.model].filter(Boolean).join("   ·   ");
-  els.push({ k: "text", x: M + 1.35, y: 0.78, w: 7.6, h: 0.34, text: meta || "Style code · proto · fit model", ph: !meta, size: 10, color: meta ? C.muted : C.ph, edit: hdr, slide: s.id });
-  els.push({ k: "pill", x: W - M - 2.7, y: 0.42, w: 2.7, h: 0.42, text: st.label, fill: st.hex, size: 10, bold: true, edit: hdr, slide: s.id });
+  els.push({ k: "text", x: M + 1.35, y: 0.78, w: W - 2 * M - 1.35, h: 0.34, text: meta || "Style code · proto · fit model", ph: !meta, size: 10, color: meta ? C.muted : C.ph, edit: hdr, slide: s.id });
   els.push({ k: "line", x: M, y: 1.3, w: W - 2 * M });
   const slots = TEMPLATES[s.template].slots, y0 = 1.5, y1 = H - 0.62, LW = 9.05, bodyH = y1 - y0;
   if (slots.length === 1) {
@@ -676,13 +675,6 @@ function layoutCover(total) {
   els.push({ k: "text", x: M, y: 4.0, w: 8, h: 0.36, text: when, size: 11, color: C.ink, edit: ed });
   els.push({ k: "text", x: M, y: 4.36, w: 8, h: 0.62, text: S.attendees ? "Attendees: " + S.attendees : "Add attendees", ph: !S.attendees, size: 11, min: 8, fit: true, color: S.attendees ? C.muted : C.ph, edit: ed });
   els.push({ k: "text", x: M, y: 5.1, w: 8, h: 0.36, text: `${total} look${total === 1 ? "" : "s"} reviewed`, size: 11, bold: true, color: C.ink });
-  let x = M;
-  STATUSES.forEach((st) => {
-    const n = S.slides.filter((s) => s.status === st.id).length; if (!n) return;
-    const label = `${n}  ${st.label}`, w = 0.5 + label.length * 0.085;
-    els.push({ k: "pill", x, y: 5.55, w, h: 0.38, text: label, fill: st.hex, size: 9.5, bold: true });
-    x += w + 0.15;
-  });
   const fh = 3.1, fw = fh * LOGO.fullRatio;
   els.push({ k: "img", x: W - M - fw - 0.2, y: 1.45, w: fw, h: fh, src: LOGO.full, png: true });
   footerEls(els, 1, total + 1);
@@ -741,7 +733,6 @@ function issues() {
     const missing = t.slots.filter(([k]) => !(s.photos || {})[k]).length;
     if (missing) probs.push(`${missing} photo${missing > 1 ? "s" : ""} missing`);
     if (!s.name) probs.push("no style name");
-    if (s.status === "review") probs.push("status still ‘To review’");
     const over = layoutLook(s, 0, 0).filter((e) => e.k === "text" && e.fit && resolveText(e).over).length;
     if (over) probs.push(`${over} text box${over > 1 ? "es" : ""} too long to fit`);
     if (probs.length) out.push({ id: s.id, text: `Look ${s.look}: ${probs.join(" · ")}` });
@@ -810,8 +801,7 @@ function openSheet(ed, slideId) {
       <div class="field"><label for="sh-name">Style name</label><input id="sh-name" data-h="name" value="${esc(s.name)}"></div>
       <div class="field"><label for="sh-code">Style code</label><input id="sh-code" data-h="code" value="${esc(s.code)}" style="font-family:var(--f-mono)"></div>
       <div class="field"><label for="sh-proto">Sample</label><select id="sh-proto" data-h="proto">${PROTOS.map((p) => `<option ${p === s.proto ? "selected" : ""}>${p}</option>`).join("")}</select></div>
-      <div class="field"><label for="sh-model">Fit model / size</label><input id="sh-model" data-h="model" value="${esc(s.model)}"></div>
-      <div class="field"><label for="sh-status">Status</label><select id="sh-status" data-h="status">${STATUSES.map((x) => `<option value="${x.id}" ${x.id === s.status ? "selected" : ""}>${x.label}</option>`).join("")}</select></div>`;
+      <div class="field"><label for="sh-model">Fit model / size</label><input id="sh-model" data-h="model" value="${esc(s.model)}"></div>`;
     $$("[data-h]", body).forEach((inp) => inp.addEventListener("input", () => { s[inp.dataset.h] = inp.value; save(); rerenderReviewSlide(s.id); rerenderReviewSlide("cover"); $(".rs-bar b", $(`[data-rs="${s.id}"]`)).textContent = "Look " + s.look; }));
   } else if (ed.kind === "cover") {
     title.textContent = "Cover";
@@ -834,7 +824,7 @@ function renderRail() {
     return `<button class="rail-item" data-id="${s.id}" aria-current="${s.id === cur().id}">
       <span class="r-num">${esc(s.look)}</span>
       <span class="r-text"><span class="r-name">${esc(s.name || "Untitled look")}</span><span class="r-code">${esc(s.code || t.name)}</span></span>
-      <span class="r-side"><span class="dot st-${s.status}" title="${esc((STATUSES.find((x) => x.id === s.status) || {}).label)}"></span><span class="r-count">${have}/${t.slots.length}</span></span>
+      <span class="r-side"><span class="r-count">${have}/${t.slots.length}</span></span>
     </button>`;
   }).join("") + `<button class="add-look" id="add-look">+ Add look</button>`;
 }
@@ -874,10 +864,6 @@ function renderEditor() {
         <button class="icon-btn" id="dup" aria-label="Duplicate look" title="Duplicate look (for a re-fit)">${ICON.copy}</button>
         <button class="icon-btn" id="del" aria-label="Delete look" title="Delete look">${ICON.del}</button>
       </div>
-    </div>
-    <div class="status-row" role="radiogroup" aria-labelledby="status-lbl">
-      <span class="lbl status-lbl" id="status-lbl">Fitting outcome</span>
-      ${STATUSES.map((x) => `<button class="chip st-${x.id}" role="radio" data-status="${x.id}" aria-checked="${x.id === s.status}"><span class="dot"></span>${x.label}</button>`).join("")}
     </div>
     <div class="slots n${t.slots.length}">
       ${t.slots.map(([k, label]) => `<section class="pair"><div class="photo ${(s.photos || {})[k] ? "has" : ""}" data-slot="${k}">${photoInner(s, k, label)}</div>${noteHTML(s, k, label + " notes")}</section>`).join("")}
@@ -955,8 +941,6 @@ ed.addEventListener("change", (e) => { if (e.target.dataset.f) { cur()[e.target.
 let delArm = null;
 ed.addEventListener("click", async (e) => {
   const s = cur();
-  const chip = e.target.closest("[data-status]");
-  if (chip) { s.status = chip.dataset.status; save(); $$(".chip", ed).forEach((c) => c.setAttribute("aria-checked", c === chip)); renderRail(); return; }
   const mic = e.target.closest("[data-mic]");
   if (mic) {
     const k = mic.dataset.mic, ta = $(`#n-${k}`);

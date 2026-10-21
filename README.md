@@ -19,7 +19,6 @@ Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 - Next to every photo is a notes box with **Dictate**: live speech-to-text, editable while you talk. Language: English, Spanish, French, Italian.
 - Every look also has **Overall comments** and **Actions** boxes.
 - **Duplicate look** creates the next proto round of the same style with empty photos and notes (for re-fits).
-- A "Share by … · 22h left" chip counts down the 24-hour deadline from the fitting start time.
 - Autosaves on the device (IndexedDB), so a refresh or a dropped connection loses nothing.
 
 **Review & edit (after the fitting)**

@@ -114,8 +114,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .fitting summary::-webkit-details-marker { display: none; }
 .fit-title { font-weight: 700; }
 .fit-sub { color: var(--muted); font-size: 14px; }
-.due { margin-left: auto; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.due.late { background: var(--rec-soft); color: var(--rec); }
 .fit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; padding: 0 14px 14px; }
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .field label, .lbl { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -308,7 +306,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <summary>
       <span class="fit-title" id="fit-title"></span>
       <span class="fit-sub" id="fit-sub"></span>
-      <span class="due" id="due"></span>
     </summary>
     <div class="fit-grid">
       <div class="field"><label for="s-season">Season / collection</label><input id="s-season" data-s="season"></div>
@@ -897,16 +894,7 @@ function renderFitting() {
   $("#fit-title").textContent = S.season || "New fitting";
   $("#fit-sub").textContent = [S.fitting, fmtDate(S.date), S.time].filter(Boolean).join(" · ");
   $$("[data-s]").forEach((i) => { if (document.activeElement !== i) i.value = S[i.dataset.s] || ""; });
-  renderDue();
   $("#example-note").hidden = !S.example;
-}
-function renderDue() {
-  const el = $("#due"); const start = new Date(`${S.date}T${S.time || "09:00"}`);
-  if (isNaN(start)) { el.textContent = ""; return; }
-  const due = new Date(start.getTime() + 864e5), left = due - Date.now();
-  const when = due.toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
-  if (left > 0) { el.className = "due"; el.textContent = `Share by ${when} · ${Math.ceil(left / 36e5)}h left`; }
-  else { el.className = "due late"; el.textContent = `24h passed (${when})`; }
 }
 function renderTemplates() {
   const sk = {
@@ -1254,7 +1242,6 @@ async function boot() {
   S = saved && saved.slides && saved.slides.length && !stale ? saved : await exampleSession();
   if (!S.current) S.current = S.slides[0].id;
   renderAll();
-  setInterval(renderDue, 60000);
   sampleP.then((fn) => { if (fn) { sampleFn = fn; if (mode === "capture") { const box = $('.note[data-note="actions"] .note-tools'); if (box && !$("#ai-actions")) box.insertAdjacentHTML("afterbegin", `<button class="ai-btn" id="ai-actions" title="Draft actions from this look's notes">${ICON.spark}Draft from notes</button>`); } } });
   const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
   idle(() => { lib("pptx").catch(() => {}); lib("pdf").catch(() => {}); });

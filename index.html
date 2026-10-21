@@ -321,6 +321,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </div>
     <div class="fit-foot">
       <button class="btn danger" id="new-fitting">Start a new fitting</button>
+      <button class="btn" id="load-example">Load the example fitting</button>
       <span class="hint" id="save-state">Saved on this device</span>
     </div>
   </details>
@@ -1008,6 +1009,16 @@ async function newFitting(btn) {
   toast("New fitting started. Add the season, then your first look.");
 }
 $("#new-fitting").addEventListener("click", (e) => newFitting(e.currentTarget));
+let exArm = false;
+$("#load-example").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  const hasWork = !S.example && S.slides.some((x) => x.name || x.code || Object.keys(x.photos || {}).length || Object.values(x.notes || {}).some(Boolean));
+  if (hasWork && !exArm) { exArm = true; const old = btn.textContent; btn.textContent = "Tap again: this replaces your current fitting"; setTimeout(() => { exArm = false; btn.textContent = old; }, 4000); return; }
+  exArm = false; stopDictation();
+  S = await exampleSession(); save();
+  setMode("capture"); renderAll();
+  toast("Example fitting loaded.");
+});
 $("#example-clear").addEventListener("click", (e) => newFitting(e.currentTarget));
 
 /* ================= review events ================= */

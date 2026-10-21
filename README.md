@@ -88,10 +88,18 @@ The swap is isolated in one place: the `toggleDictation` / `startRec` functions.
 - Swap the generic slide styling for the official LOEWE master template (fonts, logo, footer). All slide geometry is in `layoutLook()` / `layoutCover()`, in inches, shared by both exports.
 - Option: upload the export straight to the team's SharePoint/Teams folder instead of downloading.
 
-### 4. Libraries
+### 4. Branding
+- The LOEWE logo is embedded in the page (header, cover slide, slide footers) from the file supplied by the team. Ask the brand team for a vector (SVG) or high-resolution version and swap the `LOGO` constants in `app.html`.
+- The official LOEWE typeface is proprietary and isn't on public font services. The app uses **Cormorant Garamond** as a stand-in. To use the real font, add its web font files and one rule; everything picks it up automatically:
+  ```css
+  @font-face { font-family: "LOEWE Display"; src: url("fonts/loewe-display.woff2") format("woff2"); }
+  ```
+- Exported slides use Georgia/Arial so they look right on any computer. The official master template (point 3) is where the brand font belongs in PowerPoint.
+
+### 5. Libraries
 Two open-source libraries are loaded from public CDNs on first export: **PptxGenJS 3.12.0** (MIT) and **jsPDF 2.5.1** (MIT). For production, vendor them into the repo so nothing loads from outside the network.
 
-### 5. Data model (current, JSON)
+### 6. Data model (current, JSON)
 ```json
 {
   "season": "SS27 Women's Ready-to-Wear",

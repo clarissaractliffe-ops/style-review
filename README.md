@@ -1,6 +1,6 @@
 # Style Review
 
-A fitting-room tool for LOEWE product development. During a fitting the team takes or uploads photos into ready-made slide templates and dictates comments next to each photo. Afterwards they review and edit the finished deck, then export it to **PowerPoint** or **PDF** to share within 24 hours.
+A fitting-room tool for LOEWE product development. During a fitting the team takes or uploads photos into ready-made pages that follow the LOEWE "Comments Edit" sheet, and dictates comments next to each photo. Afterwards they review and edit the finished deck, then export it to **PowerPoint** or **PDF** to share within 24 hours.
 
 Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 
@@ -8,27 +8,31 @@ Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 
 ## What it does
 
+**Pages follow the LOEWE "Comments Edit" sheet**
+- A3 landscape pages with the sheet's header on every page: blue LOEWE bar with style code, style name and fitting stage, **COMMENTS EDIT**, date and time; a grey row with Line, Season, Pattern Maker and Modelist (highlighted); a sketch thumbnail on the right; "Page X of Y" at the bottom.
+- Five page templates:
+  - **Line-up**: front, back and side photos, with a column for Fabrics, Pattern, Garment sent, Relaunch and Shipment deadline
+  - **Flats**: up to four technical sketches or colour flats
+  - **Colorways**: two colorways, each with its fabric and trim spec box, and a headline box
+  - **Comments · 3 photos**: a category tag (Fit, Neckline, Hood, Pockets, Trims, Finishing, Fabrics, Lining) with the sheet's colours, an optional note beside it, three photos and a comment box under each
+  - **Comments · close-up**: category tag, one large photo, a detail photo and comment boxes
+- A style usually runs over several pages (line-up, flats, colorways, then one page per category). Header details (style code, name, pattern maker, modelist, sketch) are shared by every page with the same style code, so you type them once.
+
 **Capture (during the fitting)**
-- One "look" per slide, numbered like the line-up (Look 04, 07, 11…), with style name, style code, sample stage (Proto 1/2/3, SMS, PP sample, Production), fit model/size.
-- Four slide templates:
-  - **Full look**: front, side, back
-  - **Detail focus**: full look + two close-ups
-  - **Proto vs proto**: previous proto next to this one
-  - **Single garment**: one photo, room for long notes
-- Every photo box has **Camera** (opens the device camera directly) and **Upload** (library or files; drag-and-drop on laptop). Photos are resized to 1600 px so decks stay light.
-- Next to every photo is a notes box with **Dictate**: live speech-to-text, editable while you talk. Language: English, Spanish, French, Italian.
-- Every look also has **Overall comments** and **Actions** boxes.
-- **Duplicate look** creates the next proto round of the same style with empty photos and notes (for re-fits).
-- Autosaves on the device (IndexedDB), so a refresh or a dropped connection loses nothing.
+- **Add page** picks a template; the new page copies the current style's header.
+- Every photo box has **Camera** (opens the device camera directly) and **Upload** (library or files; drag-and-drop on laptop). Photos are resized to 1600 px so files stay light.
+- Every comment box has **Dictate**: live speech-to-text, editable while you talk. Language: English, Spanish, French, Italian.
+- **Duplicate page** makes another page of the same template and category (e.g. a second FIT page) with empty photos and comments.
+- Autosaves on the device (IndexedDB), so a refresh or a dropped connection loses nothing. Fittings saved with the earlier templates are moved onto the new ones automatically, keeping every photo and note.
 
 **Review & edit (after the fitting)**
-- Shows the actual slides, exactly as they'll export, including an auto-generated cover.
-- Tap any text to edit it in a side panel (dictation works there too); tap any photo to replace it. Slides re-fit text live and flag boxes that are too long.
-- Reorder looks with up/down arrows.
-- A "Check before sharing" list flags missing photos, missing style names and overflowing text.
+- Shows the actual pages, exactly as they'll export. Comment boxes size themselves to their text, like on the sheet.
+- Tap any text to edit it in a side panel (dictation works there too); tap the header to change style details, category, line, season or date; tap any photo to replace it.
+- Empty spaces show as dashed boxes on screen only. They never appear in the export.
+- Reorder pages with up/down arrows. A "Check before sharing" list flags missing photos, missing style details and text that's too long to fit.
 
 **Export**
-- **PowerPoint (.pptx)**: native, editable text boxes and images, 16:9. All notes are also copied into the speaker notes.
+- **PowerPoint (.pptx)**: A3 landscape, native editable text boxes, shapes and images. All comments are also copied into the speaker notes.
 - **PDF**: same layout, for people who just need to read it.
 - Both are generated from one layout definition, so the PPTX and PDF always match the Review screen.
 - On iPad/iPhone the file goes to the share sheet (Mail, Teams, OneDrive, Files…); on laptops it downloads.
@@ -84,7 +88,7 @@ The swap is isolated in one place: the `toggleDictation` / `startRec` functions.
 - Keep the on-device autosave as an offline cache: fitting rooms often have poor Wi-Fi.
 
 ### 3. Export
-- Swap the generic slide styling for the official LOEWE master template (fonts, logo, footer). All slide geometry is in `layoutLook()` / `layoutCover()`, in inches, shared by both exports.
+- Swap the generic slide styling for the official LOEWE master template (fonts, logo, footer). All page geometry is in `headerEls()` and the `LAYOUTS` object, in inches, shared by the screen and both exports.
 - Option: upload the export straight to the team's SharePoint/Teams folder instead of downloading.
 
 ### 4. Branding
@@ -99,22 +103,25 @@ The swap is isolated in one place: the `toggleDictation` / `startRec` functions.
 Two open-source libraries are loaded from public CDNs on first export: **PptxGenJS 3.12.0** (MIT) and **jsPDF 2.5.1** (MIT). For production, vendor them into the repo so nothing loads from outside the network.
 
 ### 6. Data model (current, JSON)
+One fitting = a list of pages. Each page has a template; header fields repeat on every page of the same style.
 ```json
 {
-  "season": "SS27 Women's Ready-to-Wear",
-  "fitting": "Fitting 3 · Proto review",
+  "line": "Men's Presentation",
+  "season": "Spring / Summer 2027",
+  "fitting": "Line up",
   "date": "2026-10-21", "time": "10:00",
-  "attendees": "Design, Product Development, Pattern, Merchandising",
   "lang": "en-GB",
   "slides": [{
-    "id": "…", "template": "look3", "look": "04",
-    "code": "W27-CT-0412", "name": "Double-face wool coat",
-    "proto": "Proto 2", "model": "Size 36",
-    "photos": { "front": { "src": "data:image/jpeg…", "w": 1200, "h": 1600 } },
-    "notes": { "front": "…", "side": "…", "back": "…", "overall": "…", "actions": "…" }
+    "id": "…", "template": "comments3",
+    "code": "H526Y02WIH", "name": "Bomber jacket",
+    "patternMaker": "", "modelist": "",
+    "category": "fit",
+    "photos": { "thumb": { "src": "data:image/jpeg…", "w": 800, "h": 800 }, "p1": { "src": "…", "w": 1200, "h": 1600 } },
+    "notes": { "p1": "ADD 3 CM ON BODY LENGTH ALL AROUND", "headline": "" }
   }]
 }
 ```
+Templates: `lineup`, `flats`, `colorways`, `comments3`, `closeup` (defined in `TEMPLATES` in `app.html`).
 
 ---
 

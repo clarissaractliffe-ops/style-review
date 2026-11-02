@@ -31,6 +31,13 @@ Works on iPad, iPhone/Android phones and laptops, in the browser. No install.
 - Empty spaces show as dashed boxes on screen only. They never appear in the export.
 - Reorder pages with up/down arrows. A "Check before sharing" list flags missing photos, missing style details and text that's too long to fit.
 
+**Draw on pages**
+- Tap **Draw** above any page in Review & edit (or **Draw on page** in Capture) to annotate it like the arrows and circles on the Comments Edit sheet.
+- Tools: pen, arrow, circle and eraser; seven colours (red, green, yellow, purple, cyan, black, white) and three line widths; undo (also Cmd/Ctrl+Z) and clear.
+- Works with a finger, a mouse or an Apple Pencil. Once the app sees an Apple Pencil, only the Pencil draws, so a hand resting on the iPad leaves no marks.
+- Drawings are saved with the page and exported: as vector lines in the PDF, and as one transparent image layer in PowerPoint (move or delete it like any picture). They sit on the page, not on a photo, so if you replace a photo, check the drawing still points to the right place.
+- Tap **Done** to go back to tapping text and photos to edit them.
+
 **Export**
 - **PowerPoint (.pptx)**: A3 landscape, native editable text boxes, shapes and images. All comments are also copied into the speaker notes.
 - **PDF**: same layout, for people who just need to read it.
